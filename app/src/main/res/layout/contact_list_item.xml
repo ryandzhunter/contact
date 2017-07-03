@@ -13,11 +13,11 @@
 
         <variable
             name="isFavorite"
-            type="java.lang.Boolean" />
+            type="boolean" />
 
         <variable
             name="isIndex"
-            type="java.lang.Boolean" />
+            type="boolean" />
 
         <variable
             name="contactItemVM"
