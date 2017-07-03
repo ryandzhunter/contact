@@ -73,7 +73,6 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHol
         }
     }
 
-
     public List<Contact> getContactList() {
         return contactList;
     }
