@@ -8,10 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.databinding.library.baseAdapters.BR;
+import com.ryandzhunter.contact.BR;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.databinding.ContactListItemBinding;
-import com.ryandzhunter.contact.model.Contact;
+import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 

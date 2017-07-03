@@ -8,10 +8,6 @@
         <import type="android.view.View" />
 
         <variable
-            name="obj"
-            type="com.ryandzhunter.contact.model.Contact" />
-
-        <variable
             name="mainVM"
             type="com.ryandzhunter.contact.contactlist.ContactListViewModel" />
     </data>

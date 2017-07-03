@@ -9,7 +9,7 @@
 
         <variable
             name="contact"
-            type="com.ryandzhunter.contact.model.Contact" />
+            type="com.ryandzhunter.contact.data.model.Contact" />
 
         <variable
             name="isFavorite"

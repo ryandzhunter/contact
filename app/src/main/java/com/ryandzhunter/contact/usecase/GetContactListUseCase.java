@@ -1,7 +1,7 @@
 package com.ryandzhunter.contact.usecase;
 
-import com.ryandzhunter.contact.datastore.ContactListDataStore;
-import com.ryandzhunter.contact.model.Contact;
+import com.ryandzhunter.contact.data.datastore.ContactListDataStore;
+import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 

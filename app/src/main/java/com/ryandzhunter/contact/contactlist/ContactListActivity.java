@@ -9,7 +9,7 @@ import android.view.View;
 import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.databinding.ActivityContactListBinding;
-import com.ryandzhunter.contact.model.Contact;
+import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;

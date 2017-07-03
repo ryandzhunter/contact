@@ -1,6 +1,6 @@
 package com.ryandzhunter.contact.http;
 
-import com.ryandzhunter.contact.model.Contact;
+import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 

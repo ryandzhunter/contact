@@ -1,4 +1,4 @@
-package com.ryandzhunter.contact.model;
+package com.ryandzhunter.contact.data.model;
 
 import com.google.gson.annotations.SerializedName;
 

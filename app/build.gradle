@@ -7,10 +7,6 @@ android {
     dataBinding {
         enabled = true
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8;
-        targetCompatibility JavaVersion.VERSION_1_8;
-    }
     defaultConfig {
         applicationId "com.ryandzhunter.contact"
         minSdkVersion 15
@@ -18,7 +14,15 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // Write out the current schema of Room
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -61,4 +65,9 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile "com.squareup.okhttp3:logging-interceptor:3.8.1"
 
+    // room
+    compile 'android.arch.persistence.room:runtime:1.0.0-alpha1'
+    compile 'android.arch.persistence.room:rxjava2:1.0.0-alpha1'
+    annotationProcessor "android.arch.lifecycle:compiler:1.0.0-alpha1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha1"
 }

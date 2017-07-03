@@ -3,7 +3,7 @@ package com.ryandzhunter.contact.contactlist;
 import android.databinding.BaseObservable;
 
 import com.ryandzhunter.contact.ILifecycleViewModel;
-import com.ryandzhunter.contact.model.Contact;
+import com.ryandzhunter.contact.data.model.Contact;
 
 /**
  * Created by aryandi on 7/2/17.

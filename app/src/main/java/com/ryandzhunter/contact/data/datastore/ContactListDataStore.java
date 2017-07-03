@@ -1,7 +1,7 @@
-package com.ryandzhunter.contact.datastore;
+package com.ryandzhunter.contact.data.datastore;
 
 import com.ryandzhunter.contact.http.RetrofitService;
-import com.ryandzhunter.contact.model.Contact;
+import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 
