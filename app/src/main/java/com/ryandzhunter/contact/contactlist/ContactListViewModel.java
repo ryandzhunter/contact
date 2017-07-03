@@ -50,7 +50,7 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contacts -> {
                     obsRequestResult.set(contacts);
-                    isContactEmpty = contacts.size() > 0;
+                    isContactEmpty = contacts.size() == 0;
                 }, throwable -> obsError.set(throwable)));
     }
 
