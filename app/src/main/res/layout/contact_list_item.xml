@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="contact"
+            type="com.ryandzhunter.contact.model.Contact" />
+
+        <variable
+            name="isFavorite"
+            type="java.lang.Boolean" />
+
+        <variable
+            name="isIndex"
+            type="java.lang.Boolean" />
+
+        <variable
+            name="contactItemVM"
+            type="com.ryandzhunter.contact.contactlist.ContactItemViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/favorite_check_box"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_star"
+            android:visibility="@{isFavorite ? View.VISIBLE : View.INVISIBLE}" />
+
+        <TextView
+            android:id="@+id/index_alphabet"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:gravity="center"
+            android:text="@{contact.firstName.substring(0,1)}"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="28sp"
+            tools:text="A"
+            android:visibility="@{isIndex ? View.VISIBLE : View.INVISIBLE}"/>
+
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/favorite_check_box"
+            android:background="@drawable/circle" />
+
+        <TextView
+            android:id="@+id/contact_list_alphabet"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@{contact.firstName.substring(0,1)}"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:layout_toRightOf="@id/favorite_check_box"
+            android:textSize="20sp"
+            tools:text="A" />
+
+        <TextView
+            android:id="@+id/contact_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_toRightOf="@id/profile_picture"
+            android:text="@{@string/format_name(contact.firstName,contact.lastName)}"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+</layout>
