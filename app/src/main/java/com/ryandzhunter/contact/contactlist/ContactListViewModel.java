@@ -64,10 +64,6 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
         return isContactEmpty;
     }
 
-    public void setIsContactEmpty(boolean isContactEmpty) {
-        this.isContactEmpty = isContactEmpty;
-    }
-
     public String titleBar(){
         return title;
     }

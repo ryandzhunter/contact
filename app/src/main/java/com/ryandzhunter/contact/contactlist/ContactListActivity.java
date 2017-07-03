@@ -9,7 +9,6 @@ import android.view.View;
 import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.databinding.ActivityContactListBinding;
-import com.ryandzhunter.contact.databinding.ToolbarBinding;
 import com.ryandzhunter.contact.model.Contact;
 
 import java.util.ArrayList;

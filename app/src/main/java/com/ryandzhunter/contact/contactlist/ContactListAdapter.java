@@ -24,6 +24,7 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHol
     private List<Contact> contactList;
     private Context context;
     private ContactListItemBinding binding;
+    private boolean isFirstIndex = true;
 
     ContactListAdapter(Context context, List<Contact> contactList) {
         inflater = LayoutInflater.from(context);
@@ -40,7 +41,26 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHol
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Contact item = contactList.get(position);
-        holder.takeItem(item);
+        ContactItemViewModel vm = new ContactItemViewModel(item);
+
+        // set Favorite Index
+        boolean isFavorite = false;
+        if (position == 0) isFavorite = item.favorite;
+
+        // set Alphabeth Index
+        boolean isIndex = false;
+        if (!item.favorite) {
+            if (position == 0 || isFirstIndex){
+                // firstIndex field to create alphabeth index at the first time
+                isIndex = true;
+                isFirstIndex = false;
+            } else if (!item.firstName.substring(0,1).toLowerCase()
+                    .equals(contactList.get(position - 1).firstName.substring(0,1).toLowerCase())){
+                isIndex = true;
+            }
+        }
+
+        holder.takeItem(item, vm, isFavorite, isIndex);
     }
 
     @Override
@@ -63,8 +83,11 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHol
             return DataBindingUtil.getBinding(itemView);
         }
 
-        void takeItem(final Contact contact) {
+        void takeItem(final Contact contact, ContactItemViewModel vm, boolean isFavorite, boolean isIndex) {
             getBinding().setVariable(BR.contact, contact);
+            getBinding().setVariable(BR.contactItemVM, vm);
+            getBinding().setVariable(BR.isFavorite, isFavorite);
+            getBinding().setVariable(BR.isIndex, isIndex);
             getBinding().executePendingBindings();
 
             itemView.setOnClickListener(v -> {
