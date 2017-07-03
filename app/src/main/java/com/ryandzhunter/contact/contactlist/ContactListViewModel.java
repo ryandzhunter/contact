@@ -1,13 +1,17 @@
 package com.ryandzhunter.contact.contactlist;
 
+import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.ryandzhunter.contact.ILifecycleViewModel;
+import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
@@ -25,34 +29,29 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ContactListViewModel extends BaseObservable implements ILifecycleViewModel {
 
+    private Context context;
     private GetContactListUseCase useCase;
-    public ObservableField<List<Contact>> obsRequestResult = new ObservableField<>();
-    public ObservableField<Throwable> obsError = new ObservableField<>();
-    public ObservableBoolean isLoading = new ObservableBoolean();
+    ObservableField<List<Contact>> obsRequestResult = new ObservableField<>();
+    ObservableField<Throwable> obsError = new ObservableField<>();
+    ObservableBoolean isLoading = new ObservableBoolean();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private boolean isContactEmpty;
+    private String title;
 
-    public ContactListViewModel(GetContactListUseCase useCase) {
+    public ContactListViewModel(Context context, GetContactListUseCase useCase) {
+        this.context = context;
         this.useCase = useCase;
     }
 
-    public void fetchContactList() {
+    void fetchContactList() {
         compositeDisposable.add(useCase.getContactList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contacts -> {
                     obsRequestResult.set(contacts);
-                    if (contacts.size() > 0 ){
-                        isContactEmpty = true;
-                    } else {
-                        isContactEmpty = false;
-                    }
-                }, throwable -> {
-                    {
-                        obsError.set(throwable);
-                    }
-                }));
+                    isContactEmpty = contacts.size() > 0;
+                }, throwable -> obsError.set(throwable)));
     }
 
     @Override
@@ -67,5 +66,21 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
 
     public void setIsContactEmpty(boolean isContactEmpty) {
         this.isContactEmpty = isContactEmpty;
+    }
+
+    public String titleBar(){
+        return title;
+    }
+
+    void setTitleBar(String title){
+        this.title = title;
+    }
+
+    public Drawable iconLeft(){
+        return ContextCompat.getDrawable(context, R.drawable.ic_menu);
+    }
+
+    public Drawable iconRight(){
+        return ContextCompat.getDrawable(context, R.drawable.ic_search);
     }
 }

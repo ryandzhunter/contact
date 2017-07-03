@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.ryandzhunter.contact.R;
-import com.ryandzhunter.contact.adapter.RecyclerViewBaseAdapter;
 import com.ryandzhunter.contact.databinding.ContactListItemBinding;
 import com.ryandzhunter.contact.model.Contact;
 
@@ -20,13 +19,13 @@ import java.util.List;
  * Created by aryandi on 7/2/17.
  */
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHolder> {
+class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHolder> {
     private final LayoutInflater inflater;
     private List<Contact> contactList;
     private Context context;
-    ContactListItemBinding binding;
+    private ContactListItemBinding binding;
 
-    public ContactListAdapter(Context context, List<Contact> contactList) {
+    ContactListAdapter(Context context, List<Contact> contactList) {
         inflater = LayoutInflater.from(context);
         this.contactList = contactList;
         this.context = context;
@@ -53,18 +52,18 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
         }
 
-        public ViewDataBinding getBinding() {
+        ViewDataBinding getBinding() {
             return DataBindingUtil.getBinding(itemView);
         }
 
-        public void takeItem(final Contact contact) {
+        void takeItem(final Contact contact) {
             getBinding().setVariable(BR.contact, contact);
             getBinding().executePendingBindings();
 
@@ -79,7 +78,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         return contactList;
     }
 
-    public void setContactList(List<Contact> contactLists) {
+    void setContactList(List<Contact> contactLists) {
         this.contactList = contactLists;
         notifyDataSetChanged();
     }
