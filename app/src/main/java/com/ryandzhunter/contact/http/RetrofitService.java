@@ -4,6 +4,7 @@ import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;

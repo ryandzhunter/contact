@@ -29,7 +29,7 @@ public class ContactListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel.fetchContactList();
+        viewModel.getCachedContactList();
     }
 
     @Override

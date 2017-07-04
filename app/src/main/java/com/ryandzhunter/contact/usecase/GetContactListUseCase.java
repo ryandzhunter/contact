@@ -5,7 +5,8 @@ import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -19,7 +20,15 @@ public class GetContactListUseCase {
         this.dataStore = dataStore;
     }
 
-    public Observable<List<Contact>> getContactList() {
-        return dataStore.getContactList();
+    public Flowable<List<Contact>> getAPIContactList() {
+        return dataStore.getAPIContactList();
+   }
+
+   public Flowable<List<Contact>> getCachedContactList(){
+       return dataStore.getCachedContactList();
+   }
+
+   public Completable saveCachedContact(Contact contact){
+       return dataStore.saveCachedContact(contact);
    }
 }

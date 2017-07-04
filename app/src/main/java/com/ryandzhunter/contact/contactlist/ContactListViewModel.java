@@ -15,8 +15,12 @@ import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
 import java.util.List;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -38,15 +42,56 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
         this.useCase = useCase;
     }
 
-    void fetchContactList() {
-        compositeDisposable.add(useCase.getContactList()
+    void getCachedContactList() {
+        compositeDisposable.add(useCase.getCachedContactList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(contacts -> {
+                    if (contacts.size() > 0) {
+                        onSuccess(contacts);
+                    } else {
+                        fetchContactList();
+                    }
+                }, throwable -> obsError.set(throwable)));
+    }
+
+    private void fetchContactList() {
+        compositeDisposable.add(useCase.getAPIContactList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contacts -> {
-                    obsRequestResult.set(contacts);
-                    isContactEmpty = contacts.size() == 0;
+                    for (Contact contact : contacts) {
+                        addContact(contact);
+                    }
                 }, throwable -> obsError.set(throwable)));
+    }
+
+    private void onSuccess(List<Contact> contacts) {
+        obsRequestResult.set(contacts);
+        isContactEmpty = contacts.size() == 0;
+    }
+
+    private void addContact(Contact contact) {
+        useCase.saveCachedContact(contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Timber.d("onComplete - successfully added contact");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d("onError - add:", e);
+                    }
+                });
     }
 
     @Override
@@ -59,19 +104,19 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
         return isContactEmpty;
     }
 
-    public String titleBar(){
+    public String titleBar() {
         return title;
     }
 
-    void setTitleBar(String title){
+    void setTitleBar(String title) {
         this.title = title;
     }
 
-    public Drawable iconLeft(){
+    public Drawable iconLeft() {
         return ContextCompat.getDrawable(context, R.drawable.ic_menu);
     }
 
-    public Drawable iconRight(){
+    public Drawable iconRight() {
         return ContextCompat.getDrawable(context, R.drawable.ic_search);
     }
 }
