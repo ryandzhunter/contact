@@ -1,5 +1,6 @@
 package com.ryandzhunter.contact.contactlist;
 
+import android.content.Intent;
 import android.databinding.Observable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,8 @@ import android.view.View;
 
 import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
+import com.ryandzhunter.contact.addcontact.AddContactActivity;
+import com.ryandzhunter.contact.contactdetail.ContactDetailActivity;
 import com.ryandzhunter.contact.databinding.ActivityContactListBinding;
 import com.ryandzhunter.contact.data.model.Contact;
 
@@ -40,7 +43,7 @@ public class ContactListActivity extends BaseActivity {
     @Override
     protected void setupDataBinding(View contentView) {
         getAppComponent()
-                .splashComponent(new ContactListModule(this))
+                .contactListComponent(new ContactListModule(this))
                 .inject(this);
         addViewModel(viewModel);
         binding = ActivityContactListBinding.bind(contentView);
@@ -78,6 +81,11 @@ public class ContactListActivity extends BaseActivity {
                     hideProgressDialog();
                 }
             }
+        });
+
+        binding.fabAddContact.setOnClickListener(view -> {
+            Intent intent = new Intent(ContactListActivity.this, AddContactActivity.class);
+            startActivity(intent);
         });
     }
 

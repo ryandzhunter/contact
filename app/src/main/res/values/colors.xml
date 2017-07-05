@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#689f38</color>
+    <color name="colorPrimaryDark">#4F792A</color>
+    <color name="detailPrimary">#3372C6</color>
+    <color name="detailSecondary">#2C61AE</color>
+    <color name="colorAccent">#689f38</color>
+    <color name="colorContactTitle">#689f38</color>
+    <color name="colorContactName">#D9000000</color>
+    <color name="colorLabel">#8C000000</color>
+    <color name="colorEditField">#66000000</color>
+    <color name="colorContactBg">#607D8B</color>
+    <color name="hintTextColor">#59000000</color>
+    <color name="errorTextColor">#ff0000</color>
     <color name="green">#8BC34A</color>
 </resources>

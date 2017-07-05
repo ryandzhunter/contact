@@ -6,4 +6,8 @@
     <string name="alert_network_error_message">Unable to contact the server</string>
     <string name="progress_message">Please Wait</string>
     <string name="contact_toolbar_title">Contacts</string>
+    <string name="action_favourite">Favourite</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_share">Share</string>
 </resources>

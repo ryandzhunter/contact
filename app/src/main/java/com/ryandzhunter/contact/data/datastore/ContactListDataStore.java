@@ -28,6 +28,10 @@ public class ContactListDataStore {
         return service.getAllContacts().toFlowable(BackpressureStrategy.BUFFER);
     }
 
+    public Flowable<Contact> getContactDetail(int id){
+        return service.getContact(id).toFlowable(BackpressureStrategy.BUFFER);
+    }
+
     public Flowable<List<Contact>> getCachedContactList(){
         return roomDatabase.contactDao().getAllCachedContact();
     }

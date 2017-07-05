@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.ryandzhunter.contact.BR;
 import com.ryandzhunter.contact.R;
+import com.ryandzhunter.contact.contactdetail.ContactDetailActivity;
 import com.ryandzhunter.contact.databinding.ContactListItemBinding;
 import com.ryandzhunter.contact.data.model.Contact;
 
@@ -91,7 +92,7 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHol
             getBinding().executePendingBindings();
 
             itemView.setOnClickListener(v -> {
-
+                ContactDetailActivity.openContactDetailActivity(context, contact.id);
             });
         }
     }

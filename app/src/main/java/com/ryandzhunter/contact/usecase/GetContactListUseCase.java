@@ -22,13 +22,17 @@ public class GetContactListUseCase {
 
     public Flowable<List<Contact>> getAPIContactList() {
         return dataStore.getAPIContactList();
-   }
+    }
 
-   public Flowable<List<Contact>> getCachedContactList(){
-       return dataStore.getCachedContactList();
-   }
+    public Flowable<Contact> getContactDetail(int id) {
+        return dataStore.getContactDetail(id);
+    }
 
-   public Completable saveCachedContact(Contact contact){
-       return dataStore.saveCachedContact(contact);
-   }
+    public Flowable<List<Contact>> getCachedContactList() {
+        return dataStore.getCachedContactList();
+    }
+
+    public Completable saveCachedContact(Contact contact) {
+        return dataStore.saveCachedContact(contact);
+    }
 }
