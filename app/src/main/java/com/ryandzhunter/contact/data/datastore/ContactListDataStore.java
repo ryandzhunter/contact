@@ -32,12 +32,20 @@ public class ContactListDataStore {
         return service.getContact(id).toFlowable(BackpressureStrategy.BUFFER);
     }
 
+    public Flowable<Contact> updateContactDetail(int id, Contact contact){
+        return service.updateContact(id, contact).toFlowable(BackpressureStrategy.BUFFER);
+    }
+
     public Flowable<List<Contact>> getCachedContactList(){
         return roomDatabase.contactDao().getAllCachedContact();
     }
 
     public Completable saveCachedContact(Contact contact){
         return Completable.fromAction(() -> roomDatabase.contactDao().addCachedContact(contact));
+    }
+
+    public  Completable updateCachedContact(Contact contact){
+        return Completable.fromAction(() -> roomDatabase.contactDao().updateCachedContactRoom(contact));
     }
 
 }

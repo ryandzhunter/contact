@@ -11,8 +11,6 @@ import android.view.View;
 import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.contactlist.ContactListActivity;
-import com.ryandzhunter.contact.contactlist.ContactListModule;
-import com.ryandzhunter.contact.contactlist.ContactListViewModel;
 import com.ryandzhunter.contact.databinding.ActivityContactDetailBinding;
 
 import javax.inject.Inject;
@@ -54,6 +52,8 @@ public class ContactDetailActivity extends BaseActivity {
         addViewModel(viewModel);
         binding = ActivityContactDetailBinding.bind(contentView);
         binding.setContactDetailVM(viewModel);
+        setSupportActionBar(binding.contactDetailToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         int id = getIntent().getIntExtra("id", -1);
         if (id != -1) viewModel.fetchContactDetail(id);
@@ -68,17 +68,30 @@ public class ContactDetailActivity extends BaseActivity {
                 }
             }
         });
+
+        viewModel.obsError.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                showAlertDialog(ContactDetailActivity.this, getString(R.string.alert_network_error_title), getString(R.string.alert_network_error_message));
+            }
+        });
+
+        viewModel.isFavourite.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                setFavouriteIcon(viewModel.isFavourite.get());
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_contact_detail, menu);
         this.menu = menu;
-        setFavouriteIcon(menu);
         return true;
     }
 
-    private void setFavouriteIcon(Menu menu) {
+    private void setFavouriteIcon(boolean isFavourite) {
         if (isFavourite) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favourite_filled));
         } else {
@@ -91,13 +104,13 @@ public class ContactDetailActivity extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            viewModel.clickEdit();
+            viewModel.onEditClick();
             return true;
         } else if (id == R.id.action_favourite) {
-            viewModel.updateContact(menu);
+            viewModel.onFavouriteClick();
             return true;
         } else if (id == R.id.action_delete) {
-            viewModel.deleteContact();
+            viewModel.onDeleteClick();
             return true;
         } else if (id == R.id.action_share) {
             viewModel.onShareMenuClick();

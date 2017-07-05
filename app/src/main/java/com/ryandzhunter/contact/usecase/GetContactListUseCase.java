@@ -32,6 +32,14 @@ public class GetContactListUseCase {
         return dataStore.getCachedContactList();
     }
 
+    public Flowable<Contact> updateContact(int id, Contact contact){
+        return dataStore.updateContactDetail(id, contact);
+    }
+
+    public Completable updateCachedContact(Contact contact){
+        return dataStore.updateCachedContact(contact);
+    }
+
     public Completable saveCachedContact(Contact contact) {
         return dataStore.saveCachedContact(contact);
     }
