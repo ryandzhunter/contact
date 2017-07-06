@@ -1,10 +1,16 @@
 package com.ryandzhunter.contact.addcontact;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.widget.ImageView;
@@ -15,14 +21,25 @@ import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by aryandi on 7/6/17.
  */
 
 public class AddContactViewModel extends BaseObservable implements ILifecycleViewModel {
+
+    private static final int REQUEST_CODE_CAPTURE_IMAGE = 0;
+    private static final int REQUEST_CODE_GALLERY = 1;
 
     private final Context context;
     private final GetContactListUseCase useCase;
@@ -38,6 +55,8 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
 
     ObservableBoolean isLoading = new ObservableBoolean();
     ObservableField<Throwable> obsError = new ObservableField<>();
+    private Bitmap photo;
+    private Uri imageUri;
 
     public AddContactViewModel(Context context, GetContactListUseCase usecase, AddContactView view) {
         this.context = context;
@@ -55,6 +74,10 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
 
     public void setContact(Contact contact) {
         this.contact = contact;
+        setValidityFlag(contact);
+    }
+
+    private void setValidityFlag(Contact contact) {
         isValidFirstName.set(isValidName(contact.firstName));
         isValidLastName.set(isValidName(contact.lastName));
         isValidPhoneNumber.set(isValidPhoneNumber(contact.phoneNumber));
@@ -112,7 +135,11 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     public void onSaveClicked(){
         if (checkValidation(contact)){
             if (contact.id == null){
-                addNewContact(contact);
+                if (imageUri != null){
+                    addNewContactWithPhoto();
+                } else {
+                    addNewContact(contact);
+                }
             } else {
                 updateContact(contact);
             }
@@ -127,6 +154,41 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
                 .subscribe(contacts -> {
                     addContactToCache(contact);
                 }, throwable -> obsError.set(throwable)));
+    }
+
+    private void addNewContactWithPhoto(){
+        File file = createImageFile(photo);
+        RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpg"), file);
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("profile_pic", file.getName(), imageBody);
+        RequestBody firstNameBody = RequestBody.create(MediaType.parse("text/plain"), contact.firstName);
+        RequestBody lastNameBody = RequestBody.create(MediaType.parse("text/plain"), contact.lastName);
+        RequestBody emailBody = RequestBody.create(MediaType.parse("text/plain"), contact.email);
+        RequestBody phoneBody = RequestBody.create(MediaType.parse("text/plain"), contact.phoneNumber);
+
+        compositeDisposable.add(useCase.addContactWithImage(imagePart, firstNameBody, lastNameBody, emailBody, phoneBody)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(contacts -> {
+                    addContactToCache(contact);
+                }, throwable -> obsError.set(throwable)));
+    }
+
+    public static File createImageFile(Bitmap image) {
+        String filename = Environment.getExternalStorageDirectory() + "/profile.jpg";
+        File file = new File(filename);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     private void addContactToCache(Contact contact) {
@@ -178,4 +240,41 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     public boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+
+    void onActivityResult(int requestCode, int resultCode, Intent data, AddContactActivity addContactActivity) {
+        if (requestCode == REQUEST_CODE_CAPTURE_IMAGE && resultCode == Activity.RESULT_OK) {
+            photo = (Bitmap) data.getExtras().get("data");
+            imageUri = getImageUri(context, photo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            Glide.with(addContactActivity)
+                    .load(stream.toByteArray())
+                    .asBitmap()
+                    .error(R.drawable.ic_profile_large)
+                    .into(addContactActivity.binding.addContactProfileImage);
+        }
+
+        if (requestCode == REQUEST_CODE_GALLERY && resultCode == Activity.RESULT_OK) {
+            if (null != data) {
+                imageUri = data.getData();
+                try {
+                    photo = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Glide.with(addContactActivity)
+                        .load(imageUri)
+                        .error(R.drawable.ic_profile_large)
+                        .into(addContactActivity.binding.addContactProfileImage);
+            }
+        }
+    }
+
+    public Uri getImageUri(Context context, Bitmap image) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), image, "Title", null);
+        return Uri.parse(path);
+    }
+
 }

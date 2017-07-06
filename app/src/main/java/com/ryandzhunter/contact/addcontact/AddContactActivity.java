@@ -1,15 +1,11 @@
 package com.ryandzhunter.contact.addcontact;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.Observable;
-import android.databinding.ObservableField;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -17,20 +13,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
-import com.ryandzhunter.contact.contactdetail.ContactDetailActivity;
-import com.ryandzhunter.contact.contactdetail.ContactDetailModule;
-import com.ryandzhunter.contact.contactlist.ContactListActivity;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.databinding.ActivityAddContactBinding;
-import com.ryandzhunter.contact.databinding.ActivityContactDetailBinding;
 
 import org.parceler.Parcels;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -42,10 +30,11 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
 
     private static final int REQUEST_CODE_CAPTURE_IMAGE = 0;
     private static final int REQUEST_CODE_GALLERY = 1;
+
     @Inject
     AddContactViewModel viewModel;
     Contact contact;
-    private ActivityAddContactBinding binding;
+    public ActivityAddContactBinding binding;
 
     public static void openAddContactActivity(Context context) {
         Intent intent = new Intent(context, AddContactActivity.class);
@@ -133,27 +122,7 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bitmap photo;
-        Uri imageUri;
-        if (requestCode == REQUEST_CODE_CAPTURE_IMAGE && resultCode == Activity.RESULT_OK) {
-            photo = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            Glide.with(this)
-                    .load(stream.toByteArray())
-                    .asBitmap()
-                    .error(R.drawable.ic_profile_large)
-                    .into(binding.addContactProfileImage);
-        }
-
-        if (requestCode == REQUEST_CODE_GALLERY && resultCode == Activity.RESULT_OK) {
-            if (null != data) {
-                imageUri = data.getData();
-                Glide.with(this)
-                        .load(imageUri)
-                        .error(R.drawable.ic_profile_large)
-                        .into(binding.addContactProfileImage);
-            }
-        }
+        viewModel.onActivityResult(requestCode, resultCode, data, this);
     }
+
 }

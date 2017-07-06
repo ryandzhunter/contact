@@ -10,6 +10,9 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.http.Part;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -55,6 +58,12 @@ public class ContactListDataStore {
 
     public Observable<Void> deleteContact(int id){
         return service.deleteContact(id);
+    }
+
+    public Flowable<Contact> addContactWithImage(MultipartBody.Part image, RequestBody firstName,
+                                                   RequestBody lastName, RequestBody email,
+                                                   RequestBody phoneNumber){
+        return service.addContactWithImage(image, firstName, lastName, email, phoneNumber).toFlowable(BackpressureStrategy.BUFFER);
     }
 
 }

@@ -5,9 +5,12 @@ import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -51,5 +54,11 @@ public class GetContactListUseCase {
 
     public Observable<Void> deleteContact(int id){
         return dataStore.deleteContact(id);
+    }
+
+    public Flowable<Contact> addContactWithImage(MultipartBody.Part image, RequestBody firstName,
+                                                 RequestBody lastName, RequestBody email,
+                                                 RequestBody phoneNumber){
+        return dataStore.addContactWithImage(image, firstName, lastName, email, phoneNumber);
     }
 }
