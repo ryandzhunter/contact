@@ -1,15 +1,22 @@
 package com.ryandzhunter.contact.contactdetail;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.net.Uri;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -21,6 +28,10 @@ import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.internal.subscriptions.BooleanSubscription;
@@ -31,8 +42,10 @@ import io.reactivex.internal.subscriptions.BooleanSubscription;
 
 public class ContactDetailViewModel extends BaseObservable implements ILifecycleViewModel {
 
+    private static final int REQ_STORAGE_PERMISSION = 1;
     private final Context context;
     private final GetContactListUseCase useCase;
+    private ContactDetailView view;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     ObservableField<Throwable> obsError = new ObservableField<>();
     ObservableBoolean isLoading = new ObservableBoolean();
@@ -48,14 +61,19 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     ;
     private int id;
 
-    public ContactDetailViewModel(Context context, GetContactListUseCase useCase) {
+    public ContactDetailViewModel(Context context, GetContactListUseCase useCase, ContactDetailView view) {
         this.context = context;
         this.useCase = useCase;
+        this.view = view;
     }
 
     @Override
     public void onDestroy() {
         compositeDisposable.clear();
+    }
+
+    public Contact getContact() {
+        return contact;
     }
 
     public void fetchContactDetail(int id) {
@@ -118,15 +136,6 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:" + contact.email));
         context.startActivity(Intent.createChooser(emailIntent, "Send email"));
-    }
-
-    public void onShareMenuClick() {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT,
-                contact.phoneNumber);
-        sendIntent.setType("text/plain");
-        context.startActivity(sendIntent);
     }
 
     public void onDeleteClick() {

@@ -1,5 +1,6 @@
 package com.ryandzhunter.contact.contactdetail;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.ryandzhunter.contact.contactlist.ContactListViewModel;
@@ -17,13 +18,15 @@ import dagger.Provides;
 public class ContactDetailModule {
 
     private Context context;
+    private ContactDetailView view;
 
-    public ContactDetailModule(ContactDetailActivity context) {
+    public ContactDetailModule(Context context, ContactDetailView view) {
         this.context = context;
+        this.view = view;
     }
 
     @Provides
     ContactDetailViewModel providesViewModel(GetContactListUseCase usecase) {
-        return new ContactDetailViewModel(context, usecase);
+        return new ContactDetailViewModel(context, usecase, view);
     }
 }
