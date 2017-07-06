@@ -44,10 +44,12 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
     }
 
     void getCachedContactList() {
+        isLoading.set(true);
         compositeDisposable.add(useCase.getCachedContactList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(contacts -> {
+                    isLoading.set(false);
                     if (contacts.size() > 0) {
                         onSuccess(contacts);
                     } else {
@@ -56,7 +58,7 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
                 }, throwable -> obsError.set(throwable)));
     }
 
-    private void fetchContactList() {
+    void fetchContactList() {
         compositeDisposable.add(useCase.getAPIContactList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))

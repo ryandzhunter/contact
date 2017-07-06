@@ -3,6 +3,7 @@ package com.ryandzhunter.contact.contactlist;
 import android.content.Intent;
 import android.databinding.Observable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -56,6 +57,8 @@ public class ContactListActivity extends BaseActivity {
         ContactListAdapter contactAdapter = new ContactListAdapter(this, new ArrayList<>());
         binding.rvContactList.setAdapter(contactAdapter);
 
+        binding.swipeContainer.setOnRefreshListener(() -> viewModel.fetchContactList());
+
         viewModel.obsRequestResult.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -79,6 +82,7 @@ public class ContactListActivity extends BaseActivity {
                     showProgressDialog(getString(R.string.progress_message));
                 } else {
                     hideProgressDialog();
+                    binding.swipeContainer.setRefreshing(false);
                 }
             }
         });
