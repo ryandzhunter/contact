@@ -3,6 +3,8 @@ package com.ryandzhunter.contact.contactlist;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.ryandzhunter.contact.databinding.ContactListItemBinding;
 import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by aryandi on 7/2/17.
@@ -78,6 +81,7 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHol
         ViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
+            binding.profilePicture.getBackground().setColorFilter(getRandomColor(), PorterDuff.Mode.MULTIPLY);
         }
 
         ViewDataBinding getBinding() {
@@ -104,5 +108,10 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHol
     void setContactList(List<Contact> contactLists) {
         this.contactList = contactLists;
         notifyDataSetChanged();
+    }
+
+    public int getRandomColor(){
+        Random rnd = new Random();
+        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
     }
 }
