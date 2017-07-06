@@ -7,6 +7,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -46,5 +47,9 @@ public class GetContactListUseCase {
 
     public Flowable<Contact> addContact(Contact contact){
         return dataStore.addContact(contact);
+    }
+
+    public Observable<Void> deleteContact(int id){
+        return dataStore.deleteContact(id);
     }
 }

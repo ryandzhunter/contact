@@ -32,6 +32,6 @@ public interface RetrofitService {
     Observable<Contact> updateContact(@Path("id") int id, @Body Contact contact);
 
     @DELETE("/contacts/{id}.json")
-    void deleteContact(@Path("id") int id);
+    Observable<Void> deleteContact(@Path("id") int id);
 
 }

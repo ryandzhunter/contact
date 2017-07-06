@@ -9,6 +9,7 @@ import java.util.List;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -50,6 +51,10 @@ public class ContactListDataStore {
 
     public Flowable<Contact> addContact(Contact contact){
         return service.addContact(contact).toFlowable(BackpressureStrategy.BUFFER);
+    }
+
+    public Observable<Void> deleteContact(int id){
+        return service.deleteContact(id);
     }
 
 }

@@ -24,6 +24,7 @@ import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import timber.log.Timber;
 
 /**
  * Created by aryandi on 7/4/17.
@@ -129,8 +130,12 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     }
 
     public void onDeleteClick() {
-
-    }
+        compositeDisposable.add(useCase.deleteContact(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(delete -> {
+                    Timber.d("Delete Contact Success");
+                }, throwable -> obsError.set(throwable)));    }
 
     public void onEditClick() {
         AddContactActivity.openEditContactActivity(context, contact);
