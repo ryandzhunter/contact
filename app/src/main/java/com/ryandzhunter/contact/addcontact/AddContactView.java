@@ -5,4 +5,5 @@ package com.ryandzhunter.contact.addcontact;
  */
 
 public interface AddContactView {
+    void openPhotoDialog();
 }

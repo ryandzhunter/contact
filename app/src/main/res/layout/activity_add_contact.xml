@@ -42,6 +42,7 @@
                     android:background="@color/colorContactBg">
 
                     <ImageView
+                        android:id="@+id/add_contact_profile_image"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"

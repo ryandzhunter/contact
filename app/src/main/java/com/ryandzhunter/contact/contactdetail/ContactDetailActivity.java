@@ -135,7 +135,7 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
 
     public void onShareMenuClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Share Contact")
+        builder.setTitle(R.string.share_contact)
                 .setItems(R.array.array_share_contact, (dialog, which) -> {
                     switch (which){
                         case 0:

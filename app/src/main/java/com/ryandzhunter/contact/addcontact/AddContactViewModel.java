@@ -106,7 +106,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     }
 
     public void onPhotoClick() {
-
+       view.openPhotoDialog();
     }
 
     public void onSaveClicked(){
@@ -178,5 +178,4 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     public boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
 }
