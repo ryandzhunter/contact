@@ -21,10 +21,10 @@ import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.databinding.library.baseAdapters.BR;
 import com.bumptech.glide.Glide;
 import com.ryandzhunter.contact.ILifecycleViewModel;
 import com.ryandzhunter.contact.R;
+import com.ryandzhunter.contact.addcontact.AddContactActivity;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
@@ -42,7 +42,6 @@ import io.reactivex.internal.subscriptions.BooleanSubscription;
 
 public class ContactDetailViewModel extends BaseObservable implements ILifecycleViewModel {
 
-    private static final int REQ_STORAGE_PERMISSION = 1;
     private final Context context;
     private final GetContactListUseCase useCase;
     private ContactDetailView view;
@@ -143,7 +142,7 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     }
 
     public void onEditClick() {
-
+        AddContactActivity.openEditContactActivity(context, contact);
     }
 
     public void onFavouriteClick() {

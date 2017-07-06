@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.ryandzhunter.contact.ILifecycleViewModel;
 import com.ryandzhunter.contact.R;
+import com.ryandzhunter.contact.addcontact.AddContactActivity;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
@@ -119,4 +120,9 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
     public Drawable iconRight() {
         return ContextCompat.getDrawable(context, R.drawable.ic_search);
     }
+
+    public void onFabAddClick(){
+        AddContactActivity.openAddContactActivity(context);
+    }
+
 }

@@ -40,17 +40,12 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
     private boolean isFavourite;
     private ActivityContactDetailBinding binding;
     private Menu menu;
+    private int id;
 
     public static void openContactDetailActivity(Context context, int id){
         Intent intent = new Intent(context, ContactDetailActivity.class);
         intent.putExtra("id", id);
         context.startActivity(intent);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -69,7 +64,6 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
         setSupportActionBar(binding.contactDetailToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        int id = getIntent().getIntExtra("id", -1);
         if (id != -1) viewModel.fetchContactDetail(id);
 
         viewModel.isLoading.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
@@ -96,6 +90,11 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
                 setFavouriteIcon(viewModel.isFavourite.get());
             }
         });
+    }
+
+    @Override
+    protected void getIntentExtra() {
+        id = getIntent().getIntExtra("id", -1);
     }
 
     @Override
@@ -137,7 +136,7 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
     public void onShareMenuClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Share Contact")
-                .setItems(R.array.shareContact, (dialog, which) -> {
+                .setItems(R.array.array_share_contact, (dialog, which) -> {
                     switch (which){
                         case 0:
                             shareAsText(viewModel.getContact());

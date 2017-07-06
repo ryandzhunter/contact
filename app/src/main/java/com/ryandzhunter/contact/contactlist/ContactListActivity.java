@@ -82,11 +82,11 @@ public class ContactListActivity extends BaseActivity {
                 }
             }
         });
+    }
 
-        binding.fabAddContact.setOnClickListener(view -> {
-            Intent intent = new Intent(ContactListActivity.this, AddContactActivity.class);
-            startActivity(intent);
-        });
+    @Override
+    protected void getIntentExtra() {
+
     }
 
 }

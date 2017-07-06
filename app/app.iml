@@ -151,6 +151,7 @@
     <orderEntry type="library" exported="" name="runtime-1.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="retrofit-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="converter-gson-2.3.0" level="project" />
+    <orderEntry type="library" exported="" name="parceler-1.1.9" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.7" level="project" />
     <orderEntry type="library" exported="" name="okhttp-3.8.1" level="project" />
@@ -160,6 +161,7 @@
     <orderEntry type="library" exported="" name="timber-4.5.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
     <orderEntry type="library" exported="" name="logging-interceptor-3.8.1" level="project" />
+    <orderEntry type="library" exported="" name="parceler-api-1.1.9" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-25.4.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-25.4.0" level="project" />
     <orderEntry type="library" exported="" name="support-compat-25.4.0" level="project" />

@@ -36,6 +36,11 @@
         <activity
             android:name=".contactdetail.ContactDetailActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".addcontact.AddContactActivity"
+            android:theme="@style/ContactDetailTheme"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

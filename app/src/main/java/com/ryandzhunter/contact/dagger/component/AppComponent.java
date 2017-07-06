@@ -1,5 +1,7 @@
 package com.ryandzhunter.contact.dagger.component;
 
+import com.ryandzhunter.contact.addcontact.AddContactComponent;
+import com.ryandzhunter.contact.addcontact.AddContactModule;
 import com.ryandzhunter.contact.contactdetail.ContactDetailComponent;
 import com.ryandzhunter.contact.contactdetail.ContactDetailModule;
 import com.ryandzhunter.contact.contactlist.ContactListComponent;
@@ -21,4 +23,5 @@ import dagger.Component;
 public interface AppComponent {
     ContactListComponent contactListComponent(ContactListModule contactListModule);
     ContactDetailComponent contactDetailComponent(ContactDetailModule contactDetailModule);
+    AddContactComponent addContactComponent(AddContactModule addContactModule);
 }
