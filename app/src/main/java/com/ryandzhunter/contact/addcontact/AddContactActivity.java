@@ -2,6 +2,7 @@ package com.ryandzhunter.contact.addcontact;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.Observable;
 import android.databinding.ObservableField;
 import android.os.Parcelable;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.contactdetail.ContactDetailActivity;
 import com.ryandzhunter.contact.contactdetail.ContactDetailModule;
+import com.ryandzhunter.contact.contactlist.ContactListActivity;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.databinding.ActivityAddContactBinding;
 import com.ryandzhunter.contact.databinding.ActivityContactDetailBinding;
@@ -54,6 +56,24 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
         binding = ActivityAddContactBinding.bind(contentView);
         binding.setAddContactVM(viewModel);
         viewModel.setContact(contact == null ? new Contact() : contact);
+
+        viewModel.obsError.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                showAlertDialog(AddContactActivity.this, getString(R.string.alert_network_error_title), getString(R.string.alert_network_error_message));
+            }
+        });
+
+        viewModel.isLoading.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if (viewModel.isLoading.get()){
+                    showProgressDialog(getString(R.string.progress_message));
+                } else {
+                    hideProgressDialog();
+                }
+            }
+        });
     }
 
     @Override

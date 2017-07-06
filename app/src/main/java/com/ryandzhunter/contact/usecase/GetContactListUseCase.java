@@ -43,4 +43,8 @@ public class GetContactListUseCase {
     public Completable saveCachedContact(Contact contact) {
         return dataStore.saveCachedContact(contact);
     }
+
+    public Flowable<Contact> addContact(Contact contact){
+        return dataStore.addContact(contact);
+    }
 }

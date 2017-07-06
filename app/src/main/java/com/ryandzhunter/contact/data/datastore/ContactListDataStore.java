@@ -44,8 +44,12 @@ public class ContactListDataStore {
         return Completable.fromAction(() -> roomDatabase.contactDao().addCachedContact(contact));
     }
 
-    public  Completable updateCachedContact(Contact contact){
+    public Completable updateCachedContact(Contact contact){
         return Completable.fromAction(() -> roomDatabase.contactDao().updateCachedContactRoom(contact));
+    }
+
+    public Flowable<Contact> addContact(Contact contact){
+        return service.addContact(contact).toFlowable(BackpressureStrategy.BUFFER);
     }
 
 }

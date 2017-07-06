@@ -2,7 +2,6 @@ package com.ryandzhunter.contact.addcontact;
 
 import android.content.Context;
 import android.databinding.BaseObservable;
-import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
@@ -10,15 +9,13 @@ import android.text.TextUtils;
 import android.util.Patterns;
 import android.widget.ImageView;
 
-import com.android.databinding.library.baseAdapters.BR;
 import com.bumptech.glide.Glide;
 import com.ryandzhunter.contact.ILifecycleViewModel;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
-import java.util.regex.Pattern;
-
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -28,7 +25,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class AddContactViewModel extends BaseObservable implements ILifecycleViewModel {
 
     private final Context context;
-    private final GetContactListUseCase usecase;
+    private final GetContactListUseCase useCase;
     private final AddContactView view;
 
     public Contact contact;
@@ -39,9 +36,12 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     public ObservableField<Boolean> isValidPhoneNumber = new ObservableField<>();
     public ObservableField<Boolean> isValidEmail = new ObservableField<>();
 
+    ObservableBoolean isLoading = new ObservableBoolean();
+    ObservableField<Throwable> obsError = new ObservableField<>();
+
     public AddContactViewModel(Context context, GetContactListUseCase usecase, AddContactView view) {
         this.context = context;
-        this.usecase = usecase;
+        this.useCase = usecase;
         this.view = view;
     }
 
@@ -110,7 +110,43 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     }
 
     public void onSaveClicked(){
-       
+        if (checkValidation(contact)){
+            if (contact.id == null){
+                addNewContact(contact);
+            } else {
+                updateContact(contact);
+            }
+        };
+    }
+
+    private void addNewContact(Contact contact) {
+        compositeDisposable.add(useCase.addContact(contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(contacts -> {
+                    addContactToCache(contact);
+                }, throwable -> obsError.set(throwable)));
+    }
+
+    private void addContactToCache(Contact contact) {
+        this.contact = contact;
+        useCase.saveCachedContact(contact);
+    }
+
+    private void updateContact(Contact contact) {
+        useCase.updateContact(contact.id, contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(contacts -> {
+                    onSuccessUpdateContact(contact);
+                }, throwable -> obsError.set(throwable));;
+    }
+
+    private void onSuccessUpdateContact(Contact contact) {
+        this.contact = contact;
+        useCase.updateCachedContact(contact);
     }
 
     @BindingAdapter(value = {"bind:imageUrl"}, requireAll = false)
@@ -129,8 +165,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     }
 
     private boolean checkValidation(Contact contact) {
-        return isValidName(getFirstName()) && isValidName(getLastName())
-                && isValidPhoneNumber(getPhoneNumber()) && isValidEmail(getEmail());
+        return isValidLastName.get() && isValidLastName.get() && isValidEmail.get() && isValidPhoneNumber.get();
     }
 
     public boolean isValidName(String name){
@@ -143,6 +178,5 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     public boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
 
 }
