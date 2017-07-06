@@ -137,7 +137,6 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
         Uri imageUri;
         if (requestCode == REQUEST_CODE_CAPTURE_IMAGE && resultCode == Activity.RESULT_OK) {
             photo = (Bitmap) data.getExtras().get("data");
-            imageUri = getImageUri(this, photo);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
             Glide.with(this)
@@ -150,23 +149,11 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
         if (requestCode == REQUEST_CODE_GALLERY && resultCode == Activity.RESULT_OK) {
             if (null != data) {
                 imageUri = data.getData();
-                try {
-                    photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 Glide.with(this)
                         .load(imageUri)
                         .error(R.drawable.ic_profile_large)
                         .into(binding.addContactProfileImage);
             }
         }
-    }
-
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
     }
 }
