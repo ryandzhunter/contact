@@ -120,8 +120,8 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
     }
 
     private void selectImage() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, REQUEST_CODE_GALLERY);
     }
 
