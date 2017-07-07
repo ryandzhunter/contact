@@ -1,6 +1,10 @@
 package com.ryandzhunter.contact.dagger.module;
 
-import com.ryandzhunter.contact.datastore.ContactListDataStore;
+import android.arch.persistence.room.Room;
+import android.content.Context;
+
+import com.ryandzhunter.contact.data.datastore.ContactListDataStore;
+import com.ryandzhunter.contact.data.room.ContactDatabase;
 import com.ryandzhunter.contact.http.RetrofitService;
 
 import javax.inject.Singleton;
@@ -17,7 +21,13 @@ public class DataStoreModule {
 
     @Provides
     @Singleton
-    public ContactListDataStore providesContactListDataStore(RetrofitService service) {
-        return new ContactListDataStore(service);
+    ContactListDataStore providesContactListDataStore(RetrofitService service, ContactDatabase roomDatabase) {
+        return new ContactListDataStore(service, roomDatabase);
+    }
+
+    @Provides
+    @Singleton
+    ContactDatabase providesEventDatabase(Context context) {
+        return Room.databaseBuilder(context.getApplicationContext(), ContactDatabase.class, "event_db").build();
     }
 }

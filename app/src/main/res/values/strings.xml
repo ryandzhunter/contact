@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Contact</string>
+    <string name="no_contacts_message">No Contacts Found</string>
+    <string name="format_name">%1$s %2$s</string>
+    <string name="alert_network_error_title">Network Error</string>
+    <string name="alert_network_error_message">Unable to contact the server</string>
+    <string name="progress_message">Please Wait</string>
+    <string name="contact_toolbar_title">Contacts</string>
+    <string name="action_favourite">Favourite</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_share">Share</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_email">hint_email</string>
+    <string name="hint_phone">hit_phone</string>
+    <string name="error_first_name">First name should be more than 3 characters</string>
+    <string name="error_last_name">Last name should be more than 3 characters</string>
+    <string name="error_phone_number">Phone number should be of 10 digits</string>
+    <string name="error_email_format">Email should be in email format</string>
+    <string name="share_contact">Share Contact</string>
+    <string-array name="array_share_contact">
+        <item>Share as a Text</item>
+        <item>Share as a Contact</item>
+    </string-array>
+    <string name="choose_image">Choose Image Type</string>
+    <string-array name="array_choose_image">
+        <item>Take a Photo</item>
+        <item>Get from Gallery</item>
+    </string-array>
+</resources>

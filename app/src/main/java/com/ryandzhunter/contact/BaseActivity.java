@@ -33,6 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         View contentView = getLayoutInflater().inflate(getLayoutResourceId(), root, false);
         setContentView(contentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        getIntentExtra();
         setupDataBinding(contentView);
     }
 
@@ -41,6 +42,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     int getLayoutResourceId();
 
     protected abstract void setupDataBinding(View contentView);
+
+    protected abstract void getIntentExtra();
 
     protected AppComponent getAppComponent() {
         ContactApp application = (ContactApp) getApplication();

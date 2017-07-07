@@ -9,15 +9,15 @@
 
         <variable
             name="contact"
-            type="com.ryandzhunter.contact.model.Contact" />
+            type="com.ryandzhunter.contact.data.model.Contact" />
 
         <variable
             name="isFavorite"
-            type="java.lang.Boolean" />
+            type="boolean" />
 
         <variable
             name="isIndex"
-            type="java.lang.Boolean" />
+            type="boolean" />
 
         <variable
             name="contactItemVM"
@@ -52,7 +52,7 @@
             tools:text="A"
             android:visibility="@{isIndex ? View.VISIBLE : View.INVISIBLE}"/>
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_picture"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -61,7 +61,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/favorite_check_box"
-            android:background="@drawable/circle" />
+            android:background="@drawable/circle"/>
 
         <TextView
             android:id="@+id/contact_list_alphabet"

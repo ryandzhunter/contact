@@ -7,6 +7,7 @@ import com.ryandzhunter.contact.dagger.component.DaggerAppComponent;
 import com.ryandzhunter.contact.dagger.module.AppModule;
 import com.ryandzhunter.contact.dagger.module.DataStoreModule;
 import com.ryandzhunter.contact.dagger.module.RetrofitModule;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -20,6 +21,7 @@ public class ContactApp extends Application {
     public void onCreate() {
         super.onCreate();
         initDaggerComponent();
+        initLeakCanary();
     }
 
     private void initDaggerComponent() {
@@ -28,6 +30,13 @@ public class ContactApp extends Application {
                 .retrofitModule(new RetrofitModule())
                 .dataStoreModule(new DataStoreModule())
                 .build();
+    }
+
+    private void initLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);
     }
 
     public AppComponent getAppComponent() {

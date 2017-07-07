@@ -1,5 +1,9 @@
 package com.ryandzhunter.contact.dagger.component;
 
+import com.ryandzhunter.contact.addcontact.AddContactComponent;
+import com.ryandzhunter.contact.addcontact.AddContactModule;
+import com.ryandzhunter.contact.contactdetail.ContactDetailComponent;
+import com.ryandzhunter.contact.contactdetail.ContactDetailModule;
 import com.ryandzhunter.contact.contactlist.ContactListComponent;
 import com.ryandzhunter.contact.contactlist.ContactListModule;
 import com.ryandzhunter.contact.dagger.module.AppModule;
@@ -17,5 +21,7 @@ import dagger.Component;
 @Singleton
 @Component(modules={AppModule.class, RetrofitModule.class, DataStoreModule.class})
 public interface AppComponent {
-    ContactListComponent splashComponent(ContactListModule module);
+    ContactListComponent contactListComponent(ContactListModule contactListModule);
+    ContactDetailComponent contactDetailComponent(ContactDetailModule contactDetailModule);
+    AddContactComponent addContactComponent(AddContactModule addContactModule);
 }
