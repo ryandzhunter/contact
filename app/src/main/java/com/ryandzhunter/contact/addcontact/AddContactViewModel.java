@@ -191,7 +191,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
         return file;
     }
 
-    private void addContactToCache(Contact contact) {
+    public void addContactToCache(Contact contact) {
         this.contact = contact;
         useCase.saveCachedContact(contact);
     }
