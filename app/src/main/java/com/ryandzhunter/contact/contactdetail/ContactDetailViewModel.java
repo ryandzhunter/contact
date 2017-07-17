@@ -47,7 +47,6 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
 
     private ClipData myClip;
     private ClipboardManager myClipboard;
-    ;
     private int id;
 
     public ContactDetailViewModel(Context context, GetContactListUseCase useCase, ContactDetailView view) {
@@ -137,30 +136,34 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
                     Timber.d("Delete Contact Success");
                 }, throwable -> obsError.set(throwable)));    }
 
-    public void onEditClick() {
+    void onEditClick() {
         AddContactActivity.openEditContactActivity(context, contact);
     }
 
-    public void onFavouriteClick() {
+    void onFavouriteClick() {
         if (contact.favorite != null) {
             contact.favorite = !contact.favorite;
-            updateContact();
+            updateContact(id, contact);
         }
     }
 
-    private void updateContact() {
+    public void updateContact(int id, Contact contact) {
         isLoading.set(true);
         compositeDisposable.add(useCase.updateContact(id, contact)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate(() -> isLoading.set(false))
-                .subscribe(contact -> {
-                    onSuccessUpdateContact(contact);
+                .subscribe(contactResult -> {
+                    onSuccessUpdateContact(contactResult);
                 }, throwable -> obsError.set(throwable)));
     }
 
     private void onSuccessUpdateContact(Contact contact) {
         this.contact = contact;
         isFavourite.set(contact.favorite);
+        updateCachedContact(contact);
+    }
+
+    public void updateCachedContact(Contact contact) {
         useCase.updateCachedContact(contact);
     }
 
