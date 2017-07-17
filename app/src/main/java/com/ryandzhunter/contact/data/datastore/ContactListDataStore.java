@@ -36,7 +36,7 @@ public class ContactListDataStore {
         return service.getContact(id).toFlowable(BackpressureStrategy.BUFFER);
     }
 
-    public Flowable<Contact> updateContactDetail(int id, Contact contact){
+    public Flowable<Contact> updateContact(int id, Contact contact){
         return service.updateContact(id, contact).toFlowable(BackpressureStrategy.BUFFER);
     }
 

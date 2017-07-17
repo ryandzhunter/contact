@@ -5,7 +5,6 @@ import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
@@ -37,7 +36,7 @@ public class GetContactListUseCase {
     }
 
     public Flowable<Contact> updateContact(int id, Contact contact){
-        return dataStore.updateContactDetail(id, contact);
+        return dataStore.updateContact(id, contact);
     }
 
     public Completable updateCachedContact(Contact contact){
