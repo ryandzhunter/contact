@@ -129,12 +129,17 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     }
 
     public void onDeleteClick() {
+        deleteContact(id);
+    }
+
+    public void deleteContact(int id) {
         compositeDisposable.add(useCase.deleteContact(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(delete -> {
                     Timber.d("Delete Contact Success");
-                }, throwable -> obsError.set(throwable)));    }
+                }, throwable -> obsError.set(throwable)));
+    }
 
     void onEditClick() {
         AddContactActivity.openEditContactActivity(context, contact);

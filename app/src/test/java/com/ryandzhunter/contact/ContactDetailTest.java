@@ -128,7 +128,9 @@ public class ContactDetailTest {
 
             }
         });
-        contactDetailViewModel.onDeleteClick();
+
+        contactDetailViewModel.deleteContact(contact.id);
+
         verify(useCase).deleteContact(contact.id);
     }
 }
