@@ -89,8 +89,16 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
                     switch (i) {
                         case 0:
                             //Checking Permssion
-                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(cameraIntent, REQUEST_CODE_CAPTURE_IMAGE);
+                            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+                                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                        == PackageManager.PERMISSION_GRANTED) {
+                                    captureImage();
+                                } else {
+                                    ActivityCompat.requestPermissions((this), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                                }
+                            } else {
+                                captureImage();
+                            }
                             break;
                         case 1:
                             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
@@ -112,6 +120,11 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, REQUEST_CODE_GALLERY);
+    }
+
+    private void captureImage(){
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_CODE_CAPTURE_IMAGE);
     }
 
     @Override
