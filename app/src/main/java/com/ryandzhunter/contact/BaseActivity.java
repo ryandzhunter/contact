@@ -95,7 +95,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         mAlertDialog.setTitle(title);
         mAlertDialog.setMessage(msg);
         mAlertDialog.setPositiveButton("OK", (dialog, which) -> {
+            dialog.cancel();
         });
+        mAlertDialog.show();
     }
 
 }

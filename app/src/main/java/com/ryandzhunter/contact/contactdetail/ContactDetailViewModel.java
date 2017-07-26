@@ -66,9 +66,9 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
 
     public void fetchContactDetail(int id) {
         this.id = id;
-        isLoading.set(true);
         compositeDisposable.add(useCase.getContactDetail(id)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscription -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contact -> {
                     onSuccessFetchContactDetail(contact);

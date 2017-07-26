@@ -64,8 +64,6 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
         setSupportActionBar(binding.contactDetailToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (id != -1) viewModel.fetchContactDetail(id);
-
         viewModel.isLoading.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -90,6 +88,10 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
                 setFavouriteIcon(viewModel.isFavourite.get());
             }
         });
+
+        if (id != -1) {
+            viewModel.fetchContactDetail(id);
+        }
     }
 
     @Override
