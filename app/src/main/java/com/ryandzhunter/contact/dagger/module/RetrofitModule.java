@@ -27,6 +27,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -82,7 +83,7 @@ public class RetrofitModule {
     @Singleton
     public OkHttpClient providesOkHttp(Interceptor networkInterceptor, Cache cache) {
         HttpLoggingInterceptor logger = new HttpLoggingInterceptor(message -> {
-                Log.d("HttpLog", message);
+            Timber.d("HttpLog", message);
         });
         logger.setLevel(HttpLoggingInterceptor.Level.BODY);
 
