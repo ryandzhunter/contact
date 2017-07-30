@@ -4,8 +4,10 @@ import com.ryandzhunter.contact.data.model.Contact;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -37,12 +39,14 @@ public interface RetrofitService {
     Observable<Contact> updateContact(@Path("id") int id, @Body Contact contact);
 
     @DELETE("/contacts/{id}.json")
-    Observable<Void> deleteContact(@Path("id") int id);
+    Completable deleteContact(@Path("id") int id);
 
     @Multipart
     @POST("/contacts.json")
-    Observable<Contact> addContactWithImage(@Part MultipartBody.Part image, @Part("first_name") RequestBody firstName,
-                                                 @Part("last_name") RequestBody lastName, @Part("email") RequestBody email,
-                                                 @Part("phone_number") RequestBody phoneNumber);
+    Observable<Contact> addContactWithImage(@Part("contact[first_name]") RequestBody firstName,
+                                            @Part("contact[last_name]") RequestBody lastName,
+                                            @Part("contact[email]") RequestBody email,
+                                            @Part("contact[phone_number]") RequestBody phoneNumber,
+                                            @Part MultipartBody.Part image);
 
 }

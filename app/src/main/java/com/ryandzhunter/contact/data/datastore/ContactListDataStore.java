@@ -67,7 +67,7 @@ public class ContactListDataStore {
         return service.addContact(contact).toFlowable(BackpressureStrategy.BUFFER);
     }
 
-    public Observable<Void> deleteContact(int id){
+    public Completable deleteContact(int id){
         return service.deleteContact(id);
     }
 

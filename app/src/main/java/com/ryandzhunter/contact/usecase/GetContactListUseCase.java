@@ -63,7 +63,7 @@ public class GetContactListUseCase {
         return dataStore.addContact(contact);
     }
 
-    public Observable<Void> deleteContact(int id){
+    public Completable deleteContact(int id){
         return dataStore.deleteContact(id);
     }
 

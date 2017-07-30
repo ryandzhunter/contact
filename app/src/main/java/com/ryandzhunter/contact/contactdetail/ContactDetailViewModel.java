@@ -22,8 +22,11 @@ import com.ryandzhunter.contact.addcontact.AddContactActivity;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 /**
@@ -133,12 +136,22 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     }
 
     public void deleteContact(int id) {
-        compositeDisposable.add(useCase.deleteContact(id)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnTerminate(() -> isLoading.set(false))
-                .subscribe(delete -> {
-                    Timber.d("Delete Contact Success");
-                }, throwable -> obsError.set(throwable)));
+        useCase.deleteContact(id).subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                Timber.d("on Deleted Contact Success");
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Timber.d("on Deleted Contact Error");
+            }
+        });
     }
 
     void onEditClick() {

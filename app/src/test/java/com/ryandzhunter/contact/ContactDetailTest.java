@@ -122,15 +122,8 @@ public class ContactDetailTest {
 
     @Test
     public void deleteContact() {
-        when(useCase.deleteContact(contact.id)).thenReturn(new Observable<Void>() {
-            @Override
-            protected void subscribeActual(Observer<? super Void> observer) {
-
-            }
-        });
-
+        when(useCase.deleteContact(contact.id)).thenReturn(Completable.complete());
         contactDetailViewModel.deleteContact(contact.id);
-
         verify(useCase).deleteContact(contact.id);
     }
 }
