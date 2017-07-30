@@ -27,11 +27,20 @@ public interface ContactDao {
     @Insert(onConflict = REPLACE)
     void addCachedContact(Contact contact);
 
+    @Insert
+    void addMultipleCachedContact(Contact... contacts);
+
+    @Insert
+    void addMultipleListCachedContact(List<Contact> contacts);
+
     @Query("SELECT * FROM " + Contact.TABLE_NAME + " WHERE id = :id")
     Contact getCachedContactbyId(String id);
 
     @Delete
     void deleteCachedContact(Contact event);
+
+    @Query("DELETE FROM " + Contact.TABLE_NAME)
+    void deleteAllCachedContact();
 
     @Update(onConflict = REPLACE)
     void updateCachedContactRoom(Contact event);

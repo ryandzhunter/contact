@@ -12,7 +12,6 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.http.Part;
 
 /**
  * Created by aryandi on 7/1/17.
@@ -48,8 +47,20 @@ public class ContactListDataStore {
         return Completable.fromAction(() -> roomDatabase.contactDao().addCachedContact(contact));
     }
 
+    public Completable saveMultipleCachedContact(Contact... contacts){
+        return Completable.fromAction(() -> roomDatabase.contactDao().addMultipleCachedContact(contacts));
+    }
+
+    public Completable saveMultipleListCachedContact(List<Contact> contacts){
+        return Completable.fromAction(() -> roomDatabase.contactDao().addMultipleListCachedContact(contacts));
+    }
+
     public Completable updateCachedContact(Contact contact){
         return Completable.fromAction(() -> roomDatabase.contactDao().updateCachedContactRoom(contact));
+    }
+
+    public Completable deleteAllCachedContact(){
+        return Completable.fromAction(() -> roomDatabase.contactDao().deleteAllCachedContact());
     }
 
     public Flowable<Contact> addContact(Contact contact){
@@ -63,7 +74,7 @@ public class ContactListDataStore {
     public Flowable<Contact> addContactWithImage(MultipartBody.Part image, RequestBody firstName,
                                                    RequestBody lastName, RequestBody email,
                                                    RequestBody phoneNumber){
-        return service.addContactWithImage(image, firstName, lastName, email, phoneNumber).toFlowable(BackpressureStrategy.BUFFER);
+        return service.addContactWithImage(firstName, lastName, email, phoneNumber, image).toFlowable(BackpressureStrategy.BUFFER);
     }
 
 }

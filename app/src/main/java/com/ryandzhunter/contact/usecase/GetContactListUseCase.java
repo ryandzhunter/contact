@@ -47,6 +47,18 @@ public class GetContactListUseCase {
         return dataStore.saveCachedContact(contact);
     }
 
+    public Completable saveMultipleCachedContact(Contact... contacts) {
+        return dataStore.saveMultipleCachedContact(contacts);
+    }
+
+    public Completable saveMultipleListCachedContact(List<Contact> contacts) {
+        return dataStore.saveMultipleListCachedContact(contacts);
+    }
+
+    public Completable deleteAllCachedContact(){
+        return dataStore.deleteAllCachedContact();
+    }
+
     public Flowable<Contact> addContact(Contact contact){
         return dataStore.addContact(contact);
     }

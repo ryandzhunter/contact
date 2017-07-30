@@ -1,17 +1,13 @@
 package com.ryandzhunter.contact.contactlist;
 
-import android.content.Intent;
 import android.databinding.Observable;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
-import com.ryandzhunter.contact.addcontact.AddContactActivity;
-import com.ryandzhunter.contact.contactdetail.ContactDetailActivity;
 import com.ryandzhunter.contact.databinding.ActivityContactListBinding;
 import com.ryandzhunter.contact.data.model.Contact;
 
@@ -57,7 +53,10 @@ public class ContactListActivity extends BaseActivity {
         ContactListAdapter contactAdapter = new ContactListAdapter(this, new ArrayList<>());
         binding.rvContactList.setAdapter(contactAdapter);
 
-        binding.swipeContainer.setOnRefreshListener(() -> viewModel.fetchContactList());
+        binding.swipeContainer.setOnRefreshListener(() -> {
+            viewModel.deleteAllCachedContact();
+            viewModel.fetchContactList();
+        });
 
         viewModel.obsRequestResult.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override

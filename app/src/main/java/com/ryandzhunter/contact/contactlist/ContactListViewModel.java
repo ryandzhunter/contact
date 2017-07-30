@@ -18,6 +18,7 @@ import java.util.List;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -58,15 +59,35 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
                 }, throwable -> obsError.set(throwable)));
     }
 
+    public void deleteAllCachedContact(){
+        useCase.deleteAllCachedContact()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Timber.d("onComplete - successfully deleted all contact");
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Timber.d("onError - failed:", e);
+                    }
+                });
+    }
+
     public void fetchContactList() {
         compositeDisposable.add(useCase.getAPIContactList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contacts -> {
-                    for (Contact contact : contacts) {
-                        saveCachedContact(contact);
-                    }
+                        saveCachedContact(contacts);
                 }, throwable -> obsError.set(throwable)));
     }
 
@@ -75,10 +96,12 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
         isContactEmpty = contacts.size() == 0;
     }
 
-    public void saveCachedContact(Contact contact) {
-        useCase.saveCachedContact(contact)
+    public void saveCachedContact(List<Contact> contact) {
+        useCase.saveMultipleListCachedContact(contact)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {
