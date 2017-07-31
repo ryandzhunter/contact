@@ -136,7 +136,10 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     }
 
     public void deleteContact(int id) {
-        useCase.deleteContact(id).subscribe(new CompletableObserver() {
+        useCase.deleteContact(id)
+                .doOnSubscribe(disposable ->  isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(new CompletableObserver() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
 
@@ -145,6 +148,7 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
             @Override
             public void onComplete() {
                 Timber.d("on Deleted Contact Success");
+                view.closeActivity();
             }
 
             @Override

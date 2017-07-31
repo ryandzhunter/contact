@@ -203,4 +203,10 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
         }
         return vcfFile;
     }
+
+    @Override
+    public void closeActivity(){
+        finish();
+    }
+
 }

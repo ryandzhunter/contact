@@ -5,4 +5,5 @@ package com.ryandzhunter.contact.contactdetail;
  */
 
 public interface ContactDetailView {
+    void closeActivity();
 }
