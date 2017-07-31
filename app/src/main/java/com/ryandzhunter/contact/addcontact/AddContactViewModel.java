@@ -159,7 +159,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     private void addNewContactWithPhoto(){
         File file = createImageFile(photo);
         RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpg"), file);
-        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("profile_pic", file.getName(), imageBody);
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("contact[profile_pic]", file.getName(), imageBody);
         RequestBody firstNameBody = RequestBody.create(MediaType.parse("text/plain"), contact.firstName);
         RequestBody lastNameBody = RequestBody.create(MediaType.parse("text/plain"), contact.lastName);
         RequestBody emailBody = RequestBody.create(MediaType.parse("text/plain"), contact.email);
@@ -171,7 +171,9 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contacts -> {
                     addContactToCache(contact);
-                }, throwable -> obsError.set(throwable)));
+                }, throwable -> {
+                    obsError.set(throwable);
+                }));
     }
 
     public static File createImageFile(Bitmap image) {

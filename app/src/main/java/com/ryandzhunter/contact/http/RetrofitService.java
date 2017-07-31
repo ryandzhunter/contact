@@ -43,10 +43,9 @@ public interface RetrofitService {
 
     @Multipart
     @POST("/contacts.json")
-    Observable<Contact> addContactWithImage(@Part("contact[first_name]") RequestBody firstName,
+    Observable<Contact> addContactWithImage(@Part MultipartBody.Part image,
+                                            @Part("contact[first_name]") RequestBody firstName,
                                             @Part("contact[last_name]") RequestBody lastName,
                                             @Part("contact[email]") RequestBody email,
-                                            @Part("contact[phone_number]") RequestBody phoneNumber,
-                                            @Part MultipartBody.Part image);
-
+                                            @Part("contact[phone_number]") RequestBody phoneNumber);
 }

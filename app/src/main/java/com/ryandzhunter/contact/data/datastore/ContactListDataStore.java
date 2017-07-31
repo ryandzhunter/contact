@@ -74,7 +74,8 @@ public class ContactListDataStore {
     public Flowable<Contact> addContactWithImage(MultipartBody.Part image, RequestBody firstName,
                                                    RequestBody lastName, RequestBody email,
                                                    RequestBody phoneNumber){
-        return service.addContactWithImage(firstName, lastName, email, phoneNumber, image).toFlowable(BackpressureStrategy.BUFFER);
+        return service.addContactWithImage(image, firstName, lastName, email, phoneNumber)
+                .toFlowable(BackpressureStrategy.BUFFER);
     }
 
 }

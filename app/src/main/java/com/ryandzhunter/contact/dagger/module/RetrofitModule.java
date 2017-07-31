@@ -36,7 +36,7 @@ import timber.log.Timber;
 @Module
 public class RetrofitModule {
 
-    private static final String BASE_URL = "http://gojek-contacts-app.herokuapp.com/";
+    private static final String BASE_URL = "https://gojek-contacts-app.herokuapp.com/";
     private static final String API_ENDPOINT = "api_endpoint";
 
     @Provides
@@ -64,12 +64,10 @@ public class RetrofitModule {
     public Interceptor providesNetworkInterceptor() {
         return chain -> {
             Request.Builder requestBuilder = chain.request()
-                    .newBuilder()
-                    .header("Content-Type", "application/json");
+                    .newBuilder();
             return chain.proceed(requestBuilder.build());
         };
     }
-
 
     @Provides
     @Singleton
@@ -83,7 +81,7 @@ public class RetrofitModule {
     @Singleton
     public OkHttpClient providesOkHttp(Interceptor networkInterceptor, Cache cache) {
         HttpLoggingInterceptor logger = new HttpLoggingInterceptor(message -> {
-            Timber.d("HttpLog", message);
+            Log.d("HttpLog", message);
         });
         logger.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -95,6 +93,7 @@ public class RetrofitModule {
         builder.addNetworkInterceptor(logger);
         builder.addInterceptor(logger);
         builder.cache(cache);
+
         return builder.build();
     }
 
