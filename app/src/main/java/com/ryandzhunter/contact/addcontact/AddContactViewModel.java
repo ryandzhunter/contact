@@ -20,17 +20,22 @@ import com.ryandzhunter.contact.ILifecycleViewModel;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * Created by aryandi on 7/6/17.
@@ -44,6 +49,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     private final Context context;
     private final GetContactListUseCase useCase;
     private final AddContactView view;
+    private final Preferences pref;
 
     public Contact contact;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -58,14 +64,19 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
     private Bitmap photo;
     private Uri imageUri;
 
-    public AddContactViewModel(Context context, GetContactListUseCase usecase, AddContactView view) {
+    public AddContactViewModel(Context context, GetContactListUseCase usecase, AddContactView view, Preferences pref) {
         this.context = context;
         this.useCase = usecase;
         this.view = view;
+        this.pref = pref;
     }
 
     public String titleBar() {
-        return "Add new contact";
+        if (contact != null && contact.id != null){
+            return "Edit New Contact";
+        } else {
+            return "Add New Contact";
+        }
     }
 
     public Contact getContact() {
@@ -141,13 +152,13 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
                     addNewContact(contact);
                 }
             } else {
-                updateContact(contact);
+                updateContactToAPI(contact);
             }
         };
     }
 
     private void addNewContact(Contact contact) {
-        compositeDisposable.add(useCase.addContact(contact)
+        compositeDisposable.add(useCase.addContactToAPI(contact)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
@@ -195,11 +206,20 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
 
     public void addContactToCache(Contact contact) {
         this.contact = contact;
-        useCase.saveCachedContact(contact);
+        useCase.saveCachedContact(contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(() -> {
+                    Timber.d("onComplete - successfully added contact to cache");
+                    pref.setIsShouldInvalidateList(true);
+                    view.closeActivity();
+                }, throwable -> obsError.set(throwable));
     }
 
-    private void updateContact(Contact contact) {
-        useCase.updateContact(contact.id, contact)
+    private void updateContactToAPI(Contact contact) {
+        useCase.updateContactToAPI(contact.id, contact)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
@@ -210,7 +230,19 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
 
     private void onSuccessUpdateContact(Contact contact) {
         this.contact = contact;
-        useCase.updateCachedContact(contact);
+        updateCachedContact(contact);
+    }
+
+    private void updateCachedContact(Contact contact) {
+        useCase.updateCachedContact(contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(() -> {
+                    Timber.d("onComplete - successfully update cache contact");
+                    pref.setIsShouldReloadList(true);
+                }, throwable -> obsError.set(throwable));
     }
 
     @BindingAdapter(value = {"bind:imageUrl"}, requireAll = false)

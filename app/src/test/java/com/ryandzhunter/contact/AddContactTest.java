@@ -8,6 +8,7 @@ import com.ryandzhunter.contact.addcontact.AddContactViewModel;
 import com.ryandzhunter.contact.data.datastore.ContactListDataStore;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,11 +44,13 @@ public class AddContactTest {
     private ContactListDataStore dataStore;
     @Mock
     Context fakeContext;
+    @Mock
+    Preferences pref;
 
     @Before
     public void setUpDetailViewModelTest() {
         MockitoAnnotations.initMocks(this);
-        addContactViewModel = new AddContactViewModel(fakeContext, useCase, addContactView);
+        addContactViewModel = new AddContactViewModel(fakeContext, useCase, addContactView, pref);
     }
 
     @Test

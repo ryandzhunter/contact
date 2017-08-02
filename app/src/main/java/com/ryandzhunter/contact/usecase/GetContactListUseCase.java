@@ -7,7 +7,6 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
@@ -27,16 +26,16 @@ public class GetContactListUseCase {
         return dataStore.getAPIContactList();
     }
 
-    public Flowable<Contact> getContactDetail(int id) {
-        return dataStore.getContactDetail(id);
+    public Flowable<Contact> getAPIContactDetail(int id) {
+        return dataStore.getAPIContactDetail(id);
     }
 
     public Flowable<List<Contact>> getCachedContactList() {
         return dataStore.getCachedContactList();
     }
 
-    public Flowable<Contact> updateContact(int id, Contact contact){
-        return dataStore.updateContact(id, contact);
+    public Flowable<Contact> updateContactToAPI(int id, Contact contact){
+        return dataStore.updateContactToAPI(id, contact);
     }
 
     public Completable updateCachedContact(Contact contact){
@@ -59,12 +58,16 @@ public class GetContactListUseCase {
         return dataStore.deleteAllCachedContact();
     }
 
-    public Flowable<Contact> addContact(Contact contact){
-        return dataStore.addContact(contact);
+    public Flowable<Contact> addContactToAPI(Contact contact){
+        return dataStore.addContactToAPI(contact);
     }
 
-    public Completable deleteContact(int id){
-        return dataStore.deleteContact(id);
+    public Completable deleteContactToAPI(int id){
+        return dataStore.deleteContactToAPI(id);
+    }
+
+    public Completable deleteCachedContact(Contact contact) {
+        return dataStore.deleteCachedContact(contact);
     }
 
     public Flowable<Contact> addContactWithImage(MultipartBody.Part image, RequestBody firstName,

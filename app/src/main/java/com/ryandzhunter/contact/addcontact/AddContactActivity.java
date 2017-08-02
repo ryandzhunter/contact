@@ -116,6 +116,11 @@ public class AddContactActivity extends BaseActivity implements AddContactView {
                 }).create().show();
     }
 
+    @Override
+    public void closeActivity() {
+        finish();
+    }
+
     private void selectImage() {
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");

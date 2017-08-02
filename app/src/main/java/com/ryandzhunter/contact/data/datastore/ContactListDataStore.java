@@ -9,7 +9,6 @@ import java.util.List;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
@@ -31,11 +30,11 @@ public class ContactListDataStore {
         return service.getAllContacts().toFlowable(BackpressureStrategy.BUFFER);
     }
 
-    public Flowable<Contact> getContactDetail(int id){
+    public Flowable<Contact> getAPIContactDetail(int id){
         return service.getContact(id).toFlowable(BackpressureStrategy.BUFFER);
     }
 
-    public Flowable<Contact> updateContact(int id, Contact contact){
+    public Flowable<Contact> updateContactToAPI(int id, Contact contact){
         return service.updateContact(id, contact).toFlowable(BackpressureStrategy.BUFFER);
     }
 
@@ -63,12 +62,16 @@ public class ContactListDataStore {
         return Completable.fromAction(() -> roomDatabase.contactDao().deleteAllCachedContact());
     }
 
-    public Flowable<Contact> addContact(Contact contact){
-        return service.addContact(contact).toFlowable(BackpressureStrategy.BUFFER);
+    public Completable deleteCachedContact(Contact contact){
+        return Completable.fromAction(() -> roomDatabase.contactDao().deleteCachedContact(contact));
     }
 
-    public Completable deleteContact(int id){
-        return service.deleteContact(id);
+    public Flowable<Contact> addContactToAPI(Contact contact){
+        return service.addContactToAPI(contact).toFlowable(BackpressureStrategy.BUFFER);
+    }
+
+    public Completable deleteContactToAPI(int id){
+        return service.deleteContactToAPI(id);
     }
 
     public Flowable<Contact> addContactWithImage(MultipartBody.Part image, RequestBody firstName,

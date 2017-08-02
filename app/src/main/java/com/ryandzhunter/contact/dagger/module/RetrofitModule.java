@@ -36,7 +36,7 @@ import timber.log.Timber;
 @Module
 public class RetrofitModule {
 
-    private static final String BASE_URL = "https://gojek-contacts-app.herokuapp.com/";
+    private static final String BASE_URL = "http://gojek-contacts-app.herokuapp.com/";
     private static final String API_ENDPOINT = "api_endpoint";
 
     @Provides

@@ -21,12 +21,11 @@ import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.addcontact.AddContactActivity;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
-import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -37,6 +36,7 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
 
     private final Context context;
     private final GetContactListUseCase useCase;
+    private final Preferences pref;
     private ContactDetailView view;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     ObservableField<Throwable> obsError = new ObservableField<>();
@@ -52,10 +52,11 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     private ClipboardManager myClipboard;
     private int id;
 
-    public ContactDetailViewModel(Context context, GetContactListUseCase useCase, ContactDetailView view) {
+    public ContactDetailViewModel(Context context, GetContactListUseCase useCase, ContactDetailView view, Preferences pref) {
         this.context = context;
         this.useCase = useCase;
         this.view = view;
+        this.pref = pref;
     }
 
     @Override
@@ -69,7 +70,7 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
 
     public void fetchContactDetail(int id) {
         this.id = id;
-        compositeDisposable.add(useCase.getContactDetail(id)
+        compositeDisposable.add(useCase.getAPIContactDetail(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscription -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
@@ -132,30 +133,7 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     }
 
     public void onDeleteClick() {
-        deleteContact(id);
-    }
-
-    public void deleteContact(int id) {
-        useCase.deleteContact(id)
-                .doOnSubscribe(disposable ->  isLoading.set(true))
-                .doOnTerminate(() -> isLoading.set(false))
-                .subscribe(new CompletableObserver() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-
-            }
-
-            @Override
-            public void onComplete() {
-                Timber.d("on Deleted Contact Success");
-                view.closeActivity();
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                Timber.d("on Deleted Contact Error");
-            }
-        });
+        deleteContactToAPI(id);
     }
 
     void onEditClick() {
@@ -165,28 +143,61 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
     void onFavouriteClick() {
         if (contact.favorite != null) {
             contact.favorite = !contact.favorite;
-            updateContact(id, contact);
+            updateContactToAPI(id, contact);
         }
     }
 
-    public void updateContact(int id, Contact contact) {
-        isLoading.set(true);
-        compositeDisposable.add(useCase.updateContact(id, contact)
+    public void deleteContactToAPI(int id) {
+        useCase.deleteContactToAPI(id)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable ->  isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(() -> {
+                    Timber.d("on Deleted Contact Success");
+                    deleteCachedContact(contact);
+                }, throwable -> obsError.set(throwable));
+    }
+
+    public void deleteCachedContact(Contact contact){
+        useCase.deleteCachedContact(contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable ->  isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(() -> {
+                    Timber.d("on Deleted Cached Contact Success");
+                    view.closeActivity();
+                    pref.setIsShouldReloadList(true);
+                }, throwable -> obsError.set(throwable));
+    }
+
+    // tp update favorite contact
+    public void updateContactToAPI(int id, Contact contact) {
+        compositeDisposable.add(useCase.updateContactToAPI(id, contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable ->  isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contactResult -> {
-                    onSuccessUpdateContact(contactResult);
+                    onSuccessUpdateContactToAPI(contactResult);
                 }, throwable -> obsError.set(throwable)));
     }
 
-    private void onSuccessUpdateContact(Contact contact) {
+    private void onSuccessUpdateContactToAPI(Contact contact) {
         this.contact = contact;
         isFavourite.set(contact.favorite);
         updateCachedContact(contact);
     }
 
     public void updateCachedContact(Contact contact) {
-        useCase.updateCachedContact(contact);
+        useCase.updateCachedContact(contact)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable ->  isLoading.set(true))
+                .doOnTerminate(() -> isLoading.set(false))
+                .subscribe(() -> {
+                    Timber.d("onComplete - successfully update cache contact");
+                    pref.setIsShouldReloadList(true);
+                }, throwable -> obsError.set(throwable));
     }
 
 }

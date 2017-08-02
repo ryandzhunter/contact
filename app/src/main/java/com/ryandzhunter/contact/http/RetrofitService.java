@@ -33,13 +33,13 @@ public interface RetrofitService {
     Observable<Contact> getContact(@Path("id") int id);
 
     @POST("/contacts.json")
-    Observable<Contact> addContact(@Body Contact contact);
+    Observable<Contact> addContactToAPI(@Body Contact contact);
 
     @PUT("/contacts/{id}.json")
     Observable<Contact> updateContact(@Path("id") int id, @Body Contact contact);
 
     @DELETE("/contacts/{id}.json")
-    Completable deleteContact(@Path("id") int id);
+    Completable deleteContactToAPI(@Path("id") int id);
 
     @Multipart
     @POST("/contacts.json")

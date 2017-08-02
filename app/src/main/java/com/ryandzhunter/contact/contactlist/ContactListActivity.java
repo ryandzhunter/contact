@@ -10,6 +10,7 @@ import com.ryandzhunter.contact.BaseActivity;
 import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.databinding.ActivityContactListBinding;
 import com.ryandzhunter.contact.data.model.Contact;
+import com.ryandzhunter.contact.util.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,6 @@ public class ContactListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel.getCachedContactList();
     }
 
     @Override
@@ -48,10 +48,7 @@ public class ContactListActivity extends BaseActivity {
 
         viewModel.setTitleBar(getString(R.string.contact_toolbar_title));
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        binding.rvContactList.setLayoutManager(layoutManager);
-        ContactListAdapter contactAdapter = new ContactListAdapter(this, new ArrayList<>());
-        binding.rvContactList.setAdapter(contactAdapter);
+        initRecyclerView();
 
         binding.swipeContainer.setOnRefreshListener(() -> {
             viewModel.deleteAllCachedContact();
@@ -85,6 +82,15 @@ public class ContactListActivity extends BaseActivity {
                 }
             }
         });
+
+        viewModel.getCachedContactList();
+    }
+
+    private void initRecyclerView() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.rvContactList.setLayoutManager(layoutManager);
+        ContactListAdapter contactAdapter = new ContactListAdapter(this, new ArrayList<>());
+        binding.rvContactList.setAdapter(contactAdapter);
     }
 
     @Override
@@ -92,4 +98,9 @@ public class ContactListActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel.onResume();
+    }
 }

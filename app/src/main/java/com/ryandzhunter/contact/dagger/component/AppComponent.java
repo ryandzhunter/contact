@@ -8,7 +8,9 @@ import com.ryandzhunter.contact.contactlist.ContactListComponent;
 import com.ryandzhunter.contact.contactlist.ContactListModule;
 import com.ryandzhunter.contact.dagger.module.AppModule;
 import com.ryandzhunter.contact.dagger.module.DataStoreModule;
+import com.ryandzhunter.contact.dagger.module.PreferencesModule;
 import com.ryandzhunter.contact.dagger.module.RetrofitModule;
+import com.ryandzhunter.contact.util.Preferences;
 
 import javax.inject.Singleton;
 
@@ -19,7 +21,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules={AppModule.class, RetrofitModule.class, DataStoreModule.class})
+@Component(modules={AppModule.class, RetrofitModule.class, DataStoreModule.class, PreferencesModule.class})
 public interface AppComponent {
     ContactListComponent contactListComponent(ContactListModule contactListModule);
     ContactDetailComponent contactDetailComponent(ContactDetailModule contactDetailModule);

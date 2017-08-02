@@ -37,11 +37,11 @@ public interface ContactDao {
     Contact getCachedContactbyId(String id);
 
     @Delete
-    void deleteCachedContact(Contact event);
+    void deleteCachedContact(Contact contact);
 
     @Query("DELETE FROM " + Contact.TABLE_NAME)
     void deleteAllCachedContact();
 
     @Update(onConflict = REPLACE)
-    void updateCachedContactRoom(Contact event);
+    void updateCachedContactRoom(Contact contact);
 }

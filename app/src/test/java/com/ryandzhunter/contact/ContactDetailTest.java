@@ -2,35 +2,24 @@ package com.ryandzhunter.contact;
 
 import android.content.Context;
 
-import com.ryandzhunter.contact.addcontact.AddContactView;
-import com.ryandzhunter.contact.addcontact.AddContactViewModel;
 import com.ryandzhunter.contact.contactdetail.ContactDetailView;
 import com.ryandzhunter.contact.contactdetail.ContactDetailViewModel;
 import com.ryandzhunter.contact.data.datastore.ContactListDataStore;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.http.RetrofitService;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.MockitoRule;
-import org.mockito.quality.Strictness;
 import org.reactivestreams.Subscriber;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.schedulers.Schedulers;
 
@@ -56,6 +45,9 @@ public class ContactDetailTest {
     private RetrofitService service;
     @Mock
     Context fakeContext;
+    @Mock
+    Preferences pref;
+
 
     @BeforeClass
     public static void setupClass() {
@@ -74,7 +66,7 @@ public class ContactDetailTest {
         contact.email = "aryandi2712@gmail.com";
         contact.phoneNumber = "085768818982";
 
-        contactDetailViewModel = new ContactDetailViewModel(fakeContext, useCase, contactDetailView);
+        contactDetailViewModel = new ContactDetailViewModel(fakeContext, useCase, contactDetailView, pref);
 
     }
 
@@ -86,7 +78,7 @@ public class ContactDetailTest {
     @Test
     public void testFetchContactDetail() {
 
-        when(useCase.getContactDetail(contact.id)).thenReturn(new Flowable<Contact>() {
+        when(useCase.getAPIContactDetail(contact.id)).thenReturn(new Flowable<Contact>() {
             @Override
             protected void subscribeActual(Subscriber<? super Contact> s) {
 
@@ -95,22 +87,22 @@ public class ContactDetailTest {
 
         contactDetailViewModel.fetchContactDetail(contact.id);
 
-        verify(useCase).getContactDetail(contact.id);
+        verify(useCase).getAPIContactDetail(contact.id);
     }
 
     @Test
     public void testUpdateContact() {
 
-        when(useCase.updateContact(contact.id, contact)).thenReturn(new Flowable<Contact>() {
+        when(useCase.updateContactToAPI(contact.id, contact)).thenReturn(new Flowable<Contact>() {
             @Override
             protected void subscribeActual(Subscriber<? super Contact> s) {
 
             }
         });
 
-        contactDetailViewModel.updateContact(contact.id, contact);
+        contactDetailViewModel.updateContactToAPI(contact.id, contact);
 
-        verify(useCase).updateContact(contact.id,contact);
+        verify(useCase).updateContactToAPI(contact.id,contact);
     }
 
     @Test
@@ -121,9 +113,16 @@ public class ContactDetailTest {
     }
 
     @Test
-    public void deleteContact() {
-        when(useCase.deleteContact(contact.id)).thenReturn(Completable.complete());
-        contactDetailViewModel.deleteContact(contact.id);
-        verify(useCase).deleteContact(contact.id);
+    public void deleteContactToAPI() {
+        when(useCase.deleteContactToAPI(contact.id)).thenReturn(Completable.complete());
+        contactDetailViewModel.deleteContactToAPI(contact.id);
+        verify(useCase).deleteContactToAPI(contact.id);
+    }
+
+    @Test
+    public void deleteCacheContact(){
+        when(useCase.deleteCachedContact(contact)).thenReturn(Completable.complete());
+        contactDetailViewModel.deleteCachedContact(contact);
+        verify(useCase).deleteCachedContact(contact);
     }
 }

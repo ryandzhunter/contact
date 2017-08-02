@@ -7,6 +7,7 @@ import com.ryandzhunter.contact.contactdetail.ContactDetailViewModel;
 import com.ryandzhunter.contact.dagger.module.UseCaseModule;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
 import dagger.Module;
 import dagger.Provides;
@@ -27,7 +28,7 @@ public class AddContactModule {
     }
 
     @Provides
-    AddContactViewModel providesViewModel(GetContactListUseCase usecase) {
-        return new AddContactViewModel(context, usecase, view);
+    AddContactViewModel providesViewModel(GetContactListUseCase usecase, Preferences pref) {
+        return new AddContactViewModel(context, usecase, view, pref);
     }
 }

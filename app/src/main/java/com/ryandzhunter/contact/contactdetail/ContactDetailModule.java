@@ -6,6 +6,7 @@ import android.content.Context;
 import com.ryandzhunter.contact.contactlist.ContactListViewModel;
 import com.ryandzhunter.contact.dagger.module.UseCaseModule;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,7 +27,7 @@ public class ContactDetailModule {
     }
 
     @Provides
-    ContactDetailViewModel providesViewModel(GetContactListUseCase usecase) {
-        return new ContactDetailViewModel(context, usecase, view);
+    ContactDetailViewModel providesViewModel(GetContactListUseCase usecase, Preferences pref) {
+        return new ContactDetailViewModel(context, usecase, view, pref);
     }
 }

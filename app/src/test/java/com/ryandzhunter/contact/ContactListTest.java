@@ -2,11 +2,13 @@ package com.ryandzhunter.contact;
 
 import android.content.Context;
 
+import com.google.common.collect.ImmutableSortedMultiset;
 import com.ryandzhunter.contact.contactlist.ContactListViewModel;
 import com.ryandzhunter.contact.data.datastore.ContactListDataStore;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.http.RetrofitService;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -55,6 +57,9 @@ public class ContactListTest {
     @Mock
     Context fakeContext;
     private ContactListViewModel viewModel;
+    private List<Contact> contactList;
+    @Mock
+    Preferences pref;
 
 
     @BeforeClass
@@ -74,7 +79,9 @@ public class ContactListTest {
         contact.email = "aryandi2712@gmail.com";
         contact.phoneNumber = "085768818982";
 
-        viewModel = new ContactListViewModel(fakeContext, useCase);
+        contactList.add(contact);
+
+        viewModel = new ContactListViewModel(fakeContext, useCase, pref);
     }
 
     @AfterClass
@@ -116,16 +123,16 @@ public class ContactListTest {
     @Test
     public void testSaveCachedContact(){
 
-        when(useCase.saveCachedContact(contact)).thenReturn(new Completable() {
+        when(useCase.saveMultipleListCachedContact(contactList)).thenReturn(new Completable() {
             @Override
             protected void subscribeActual(CompletableObserver s) {
 
             }
         });
 
-        viewModel.saveCachedContact(contact);
+        viewModel.saveCachedContact(contactList);
 
-        verify(useCase).saveCachedContact(contact);
+        verify(useCase).saveMultipleListCachedContact(contactList);
     }
 
 }

@@ -13,6 +13,7 @@ import com.ryandzhunter.contact.R;
 import com.ryandzhunter.contact.addcontact.AddContactActivity;
 import com.ryandzhunter.contact.data.model.Contact;
 import com.ryandzhunter.contact.usecase.GetContactListUseCase;
+import com.ryandzhunter.contact.util.Preferences;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ import timber.log.Timber;
 
 public class ContactListViewModel extends BaseObservable implements ILifecycleViewModel {
 
+    private final Preferences pref;
     private Context context;
     private GetContactListUseCase useCase;
     ObservableField<List<Contact>> obsRequestResult = new ObservableField<>();
@@ -39,9 +41,10 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
     private boolean isContactEmpty;
     private String title;
 
-    public ContactListViewModel(Context context, GetContactListUseCase useCase) {
+    public ContactListViewModel(Context context, GetContactListUseCase useCase, Preferences pref) {
         this.context = context;
         this.useCase = useCase;
+        this.pref = pref;
     }
 
     public void getCachedContactList() {
@@ -87,13 +90,15 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
                 .doOnSubscribe(disposable -> isLoading.set(true))
                 .doOnTerminate(() -> isLoading.set(false))
                 .subscribe(contacts -> {
-                        saveCachedContact(contacts);
+                    saveCachedContact(contacts);
+                    pref.setIsShouldInvalidateList(false);
                 }, throwable -> obsError.set(throwable)));
     }
 
     private void onSuccess(List<Contact> contacts) {
         obsRequestResult.set(contacts);
         isContactEmpty = contacts.size() == 0;
+        pref.setIsShouldReloadList(false);
     }
 
     public void saveCachedContact(List<Contact> contact) {
@@ -150,4 +155,12 @@ public class ContactListViewModel extends BaseObservable implements ILifecycleVi
         AddContactActivity.openAddContactActivity(context);
     }
 
+    public void onResume() {
+        if (pref.isShouldInvalidateList()) {
+            deleteAllCachedContact();
+            fetchContactList();
+        } else if (pref.isShouldReloadList()) {
+            getCachedContactList();
+        }
+    }
 }
