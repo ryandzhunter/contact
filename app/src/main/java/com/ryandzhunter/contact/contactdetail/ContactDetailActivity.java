@@ -209,4 +209,10 @@ public class ContactDetailActivity extends BaseActivity implements ContactDetail
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel.onResume();
+    }
+
 }

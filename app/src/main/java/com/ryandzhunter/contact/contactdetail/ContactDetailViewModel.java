@@ -200,4 +200,9 @@ public class ContactDetailViewModel extends BaseObservable implements ILifecycle
                 }, throwable -> obsError.set(throwable));
     }
 
+    public void onResume() {
+        if (pref.isShouldReloadList()) {
+            fetchContactDetail(contact.id);
+        }
+    }
 }

@@ -242,6 +242,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
                 .subscribe(() -> {
                     Timber.d("onComplete - successfully update cache contact");
                     pref.setIsShouldReloadList(true);
+                    view.closeActivity();
                 }, throwable -> obsError.set(throwable));
     }
 
