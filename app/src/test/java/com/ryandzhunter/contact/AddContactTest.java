@@ -15,12 +15,18 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.reactivestreams.Subscriber;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -50,6 +56,14 @@ public class AddContactTest {
     @Before
     public void setUpDetailViewModelTest() {
         MockitoAnnotations.initMocks(this);
+
+        contact = new Contact();
+        contact.id = 214;
+        contact.firstName = "Aryandi";
+        contact.lastName = "Putra";
+        contact.email = "aryandi2712@gmail.com";
+        contact.phoneNumber = "085768818982";
+
         addContactViewModel = new AddContactViewModel(fakeContext, useCase, addContactView, pref);
     }
 
@@ -91,9 +105,71 @@ public class AddContactTest {
     }
 
     @Test
+    public void testAddContact() {
+
+        when(useCase.addContactToAPI(contact)).thenReturn(new Flowable<Contact>() {
+            @Override
+            protected void subscribeActual(Subscriber<? super Contact> s) {
+
+            }
+        });
+
+        addContactViewModel.addNewContactToAPI(contact);
+
+        verify(useCase).addContactToAPI(contact);
+    }
+
+    @Test
+    public void testAddContactWithImage() throws Exception {
+        File file = new File("/path");
+        RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpg"), file);
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("contact[profile_pic]", file.getName(), imageBody);
+        RequestBody firstNameBody = RequestBody.create(MediaType.parse("text/plain"), contact.firstName);
+        RequestBody lastNameBody = RequestBody.create(MediaType.parse("text/plain"), contact.lastName);
+        RequestBody phoneBody = RequestBody.create(MediaType.parse("text/plain"), contact.phoneNumber);
+        RequestBody emailBody = RequestBody.create(MediaType.parse("text/plain"), contact.email);
+
+        when(useCase.addContactWithImage(imagePart, firstNameBody, lastNameBody, emailBody, phoneBody))
+                .thenReturn(new Flowable<Contact>() {
+                    @Override
+                    protected void subscribeActual(Subscriber<? super Contact> s) {
+
+                    }
+                });
+
+        addContactViewModel.addNewContactWithPhotoToAPI(imagePart, firstNameBody, lastNameBody, emailBody, phoneBody);
+
+        verify(useCase).addContactWithImage(imagePart, firstNameBody, lastNameBody, emailBody, phoneBody);
+
+    }
+
+
+    @Test
     public void addContactToCache() {
         when(useCase.saveCachedContact(contact)).thenReturn(Completable.complete());
         addContactViewModel.addContactToCache(contact);
         verify(useCase).saveCachedContact(contact);
+    }
+
+    @Test
+    public void testUpdateContact() {
+
+        when(useCase.updateContactToAPI(contact.id, contact)).thenReturn(new Flowable<Contact>() {
+            @Override
+            protected void subscribeActual(Subscriber<? super Contact> s) {
+
+            }
+        });
+
+        addContactViewModel.updateContactToAPI(contact);
+
+        verify(useCase).updateContactToAPI(contact.id,contact);
+    }
+
+    @Test
+    public void testUpdateCachedContact() {
+        when(useCase.updateCachedContact(contact)).thenReturn(Completable.complete());
+        addContactViewModel.updateCachedContact(contact);
+        verify(useCase).updateCachedContact(contact);
     }
 }

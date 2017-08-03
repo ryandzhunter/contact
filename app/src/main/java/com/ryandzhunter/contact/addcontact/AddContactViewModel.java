@@ -27,10 +27,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -149,7 +147,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
                 if (imageUri != null){
                     addNewContactWithPhoto();
                 } else {
-                    addNewContact(contact);
+                    addNewContactToAPI(contact);
                 }
             } else {
                 updateContactToAPI(contact);
@@ -157,7 +155,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
         };
     }
 
-    private void addNewContact(Contact contact) {
+    public void addNewContactToAPI(Contact contact) {
         compositeDisposable.add(useCase.addContactToAPI(contact)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
@@ -176,6 +174,10 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
         RequestBody emailBody = RequestBody.create(MediaType.parse("text/plain"), contact.email);
         RequestBody phoneBody = RequestBody.create(MediaType.parse("text/plain"), contact.phoneNumber);
 
+        addNewContactWithPhotoToAPI(imagePart, firstNameBody, lastNameBody, emailBody, phoneBody);
+    }
+
+    public void addNewContactWithPhotoToAPI(MultipartBody.Part imagePart, RequestBody firstNameBody, RequestBody lastNameBody, RequestBody emailBody, RequestBody phoneBody) {
         compositeDisposable.add(useCase.addContactWithImage(imagePart, firstNameBody, lastNameBody, emailBody, phoneBody)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
@@ -218,7 +220,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
                 }, throwable -> obsError.set(throwable));
     }
 
-    private void updateContactToAPI(Contact contact) {
+    public void updateContactToAPI(Contact contact) {
         useCase.updateContactToAPI(contact.id, contact)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> isLoading.set(true))
@@ -233,7 +235,7 @@ public class AddContactViewModel extends BaseObservable implements ILifecycleVie
         updateCachedContact(contact);
     }
 
-    private void updateCachedContact(Contact contact) {
+    public void updateCachedContact(Contact contact) {
         useCase.updateCachedContact(contact)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
