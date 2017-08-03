@@ -25,6 +25,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 import org.mockito.quality.Strictness;
 import org.reactivestreams.Subscriber;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.List;
 
@@ -44,6 +46,8 @@ import static org.mockito.Mockito.when;
  * Created by aryandi on 7/7/17.
  */
 
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class ContactListTest {
 
     @Mock

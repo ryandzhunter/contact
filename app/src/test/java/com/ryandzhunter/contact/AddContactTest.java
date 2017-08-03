@@ -12,10 +12,13 @@ import com.ryandzhunter.contact.util.Preferences;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.reactivestreams.Subscriber;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -37,6 +40,8 @@ import static org.mockito.Mockito.when;
  * Created by aryandi on 7/7/17.
  */
 
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class AddContactTest {
 
     private AddContactViewModel addContactViewModel;
@@ -83,25 +88,10 @@ public class AddContactTest {
 
     @Test
     public void testCheckIsValidEmail() throws Exception{
-
-//        Field field = field(Patterns.class, "EMAIL_ADDRESS");
-//        field.set(Patterns.class, mock(Pattern.class));
-        Field field = mock(Field.class);
-        Patterns patterns = mock(Patterns.class);
-
-        // prepare matcher
-        Matcher matcher = mock(Matcher.class);
-        when(matcher.matches())
-                .thenReturn(true);
-
-        // final mock
-        when(Patterns.EMAIL_ADDRESS.matcher("aryandi@gmail.com"))
-                .thenReturn(matcher);
-
-//        assertTrue(addContactViewModel.isValidEmail("aryandi@gmail.com"));
-//        assertFalse(addContactViewModel.isValidEmail("aryandi"));
-//        assertFalse(addContactViewModel.isValidEmail("@aryandi"));
-//        assertFalse(addContactViewModel.isValidEmail("aryandi@gmail."));
+        assertTrue(addContactViewModel.isValidEmail("aryandi@gmail.com"));
+        assertFalse(addContactViewModel.isValidEmail("aryandi"));
+        assertFalse(addContactViewModel.isValidEmail("@aryandi"));
+        assertFalse(addContactViewModel.isValidEmail("aryandi@gmail."));
     }
 
     @Test
