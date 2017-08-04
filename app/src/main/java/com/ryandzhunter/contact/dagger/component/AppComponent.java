@@ -10,7 +10,6 @@ import com.ryandzhunter.contact.dagger.module.AppModule;
 import com.ryandzhunter.contact.dagger.module.DataStoreModule;
 import com.ryandzhunter.contact.dagger.module.PreferencesModule;
 import com.ryandzhunter.contact.dagger.module.RetrofitModule;
-import com.ryandzhunter.contact.util.Preferences;
 
 import javax.inject.Singleton;
 

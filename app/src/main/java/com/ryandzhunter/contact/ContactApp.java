@@ -17,11 +17,18 @@ public class ContactApp extends Application {
 
     private AppComponent appComponent;
 
+    public static ContactApp application;
+
+    private AppComponent mAppComponent;
+
+    public static ContactApp getApp() { return application;}
+
     @Override
     public void onCreate() {
         super.onCreate();
         initDaggerComponent();
         initLeakCanary();
+        application = this;
     }
 
     private void initDaggerComponent() {

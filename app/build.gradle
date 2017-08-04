@@ -54,6 +54,7 @@ dependencies {
     testCompile "org.robolectric:robolectric:3.3.2"
     androidTestCompile 'org.mockito:mockito-core:2.8.47'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
+    androidTestCompile 'com.squareup.okhttp3:mockwebserver:3.8.1'
 
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support:recyclerview-v7:25.4.0'
@@ -63,6 +64,7 @@ dependencies {
     //dagger
     compile 'com.google.dagger:dagger:2.9'
     annotationProcessor "com.google.dagger:dagger-compiler:2.9"
+    androidTestAnnotationProcessor 'com.google.dagger:dagger-compiler:2.9'
     provided 'javax.annotation:jsr250-api:1.0'
     // rxjava
     compile 'io.reactivex.rxjava2:rxjava:2.1.1'

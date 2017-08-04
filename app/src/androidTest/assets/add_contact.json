@@ -1,0 +1,11 @@
+{
+  "id": 792,
+  "first_name": "Amitabh",
+  "last_name": "Bachchan",
+  "email": "ab@bachchan.com",
+  "phone_number": "+919980123412",
+  "profile_pic": "/images/missing.png",
+  "favorite": false,
+  "created_at": "2017-08-04T09:11:21.609Z",
+  "updated_at": "2017-08-04T09:11:21.609Z"
+}

@@ -8,31 +8,31 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 
+import com.ryandzhunter.contact.ContactApp;
 import com.ryandzhunter.contact.R;
+import com.ryandzhunter.contact.dagger.DaggerTestComponent;
+import com.ryandzhunter.contact.dagger.TestComponent;
 import com.ryandzhunter.contact.addcontact.AddContactActivity;
 import com.ryandzhunter.contact.addcontact.AddContactViewModel;
+import com.ryandzhunter.contact.dagger.module.AppModule;
+import com.ryandzhunter.contact.dagger.module.DataStoreModule;
+import com.ryandzhunter.contact.dagger.module.RetrofitModule;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+import java.io.IOException;
+
+import okhttp3.mockwebserver.MockWebServer;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -45,15 +45,24 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class AddContactActivityTest {
 
-    @Inject
+    private TestComponent testComponent;
+    private MockWebServer mMockWebServer;
     AddContactViewModel viewModel;
 
     @Rule
     public ActivityTestRule<AddContactActivity> mActivityTestRule = new ActivityTestRule<>(AddContactActivity.class);
 
     @Before
-    public void setUp(){
+    public void setUp() throws IOException {
 
+        mMockWebServer = new MockWebServer();
+        mMockWebServer.start();
+
+        testComponent = DaggerTestComponent.builder()
+                .appModule(new AppModule(ContactApp.getApp()))
+                .retrofitModule(new RetrofitModule())
+                .dataStoreModule(new DataStoreModule()).build();
+        testComponent.inject(this);
     }
 
     @Test
@@ -199,6 +208,16 @@ public class AddContactActivityTest {
 
         textEmailError.check(doesNotExist());
 
+        onView(withId(R.id.add_contact_button))
+                .perform(click());
+
+
+
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mMockWebServer.shutdown();
     }
 
 
