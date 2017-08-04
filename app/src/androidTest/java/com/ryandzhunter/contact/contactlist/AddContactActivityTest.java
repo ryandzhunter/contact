@@ -1,7 +1,10 @@
 package com.ryandzhunter.contact.contactlist;
 
 
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -10,18 +13,28 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.ryandzhunter.contact.R;
+import com.ryandzhunter.contact.addcontact.AddContactActivity;
+import com.ryandzhunter.contact.addcontact.AddContactViewModel;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -32,79 +45,161 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class AddContactActivityTest {
 
+    @Inject
+    AddContactViewModel viewModel;
+
     @Rule
-    public ActivityTestRule<ContactListActivity> mActivityTestRule = new ActivityTestRule<>(ContactListActivity.class);
+    public ActivityTestRule<AddContactActivity> mActivityTestRule = new ActivityTestRule<>(AddContactActivity.class);
+
+    @Before
+    public void setUp(){
+
+    }
+
+    @Test
+    public void CheckValidNameTest(){
+        ViewInteraction textFirstNameError = onView(
+                allOf(withId(R.id.add_contact_first_name_error), withText("First name should be more than 3 characters"),
+                        isDisplayed()));
+        textFirstNameError.check(matches(isDisplayed()));
+
+        ViewInteraction textLastNameError = onView(
+                allOf(withId(R.id.add_contact_last_name_error), withText("Last name should be more than 3 characters"),
+                        isDisplayed()));
+        textLastNameError.check(matches(isDisplayed()));
+
+        ViewInteraction editFirstName = onView(allOf(withId(R.id.add_contact_first_name), isDisplayed()));
+
+        editFirstName.perform(typeText("aa"), closeSoftKeyboard());
+
+        textFirstNameError.check(matches(isDisplayed()));
+
+        ViewInteraction editLastName = onView(allOf(withId(R.id.add_contact_last_name), isDisplayed()));
+
+        editLastName.perform(typeText("bb"), closeSoftKeyboard());
+
+        textLastNameError.check(matches(isDisplayed()));
+
+        editFirstName.perform(clearText());
+
+        editFirstName.perform(typeText("aaa"), closeSoftKeyboard());
+
+        textFirstNameError.check(doesNotExist());
+
+        editLastName.perform(clearText());
+
+        editLastName.perform(typeText("bbb"), closeSoftKeyboard());
+
+        textLastNameError.check(doesNotExist());
+
+    }
+
+    @Test
+    public void checkValidPhoneTest(){
+
+        ViewInteraction textPhoneError = onView(
+                allOf(withId(R.id.add_contact_phone_error), withText("Phone number should be of 10 digits"),
+                        isDisplayed()));
+        textPhoneError.check(matches(isDisplayed()));
+
+        ViewInteraction editPhone = onView(allOf(withId(R.id.add_contact_phone), isDisplayed()));
+
+        editPhone.perform(typeText("08122222"), closeSoftKeyboard());
+
+        textPhoneError.check(matches(isDisplayed()));
+
+        editPhone.perform(clearText());
+
+        editPhone.perform(typeText("081282100812"), closeSoftKeyboard());
+
+        textPhoneError.check(doesNotExist());
+
+    }
+
+    @Test
+    public void checkValidEmailTest(){
+
+        Espresso.onView(ViewMatchers.withId(R.id.scroll_view)).perform(ViewActions.swipeUp());
+
+        ViewInteraction textEmailError = onView(
+                allOf(withId(R.id.add_contact_email_error), withText("Email should be in email format"),
+                        isDisplayed()));
+        textEmailError.check(matches(isDisplayed()));
+
+        ViewInteraction editEmail = onView(allOf(withId(R.id.add_contact_email), isDisplayed()));
+
+        editEmail.perform(typeText("asasas"), closeSoftKeyboard());
+
+        textEmailError.check(matches(isDisplayed()));
+
+        editEmail.perform(clearText());
+
+        editEmail.perform(typeText("gaga@gm"), closeSoftKeyboard());
+
+        textEmailError.check(matches(isDisplayed()));
+
+        editEmail.perform(clearText());
+
+        editEmail.perform(typeText("gaga@gmail.com"), closeSoftKeyboard());
+
+        textEmailError.check(doesNotExist());
+
+    }
+
 
     @Test
     public void addContactActivityTest() {
-        ViewInteraction floatingActionButton = onView(
-                allOf(withId(R.id.fab_add_contact), isDisplayed()));
-        floatingActionButton.perform(click());
 
-        pressBack();
+        String firstName = "Aryandi";
+        String lastName = "Putra";
+        String phone = "085768818982";
+        String email = "aryandi2712@gmail.com";
 
-        ViewInteraction textView = onView(
+        ViewInteraction textFirstNameError = onView(
                 allOf(withId(R.id.add_contact_first_name_error), withText("First name should be more than 3 characters"),
-                        childAtPosition(
-                                allOf(withId(R.id.add_contact_first_name_layout),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                                1)),
-                                1),
                         isDisplayed()));
-        textView.check(matches(isDisplayed()));
+        textFirstNameError.check(matches(isDisplayed()));
 
-        ViewInteraction textView2 = onView(
+        ViewInteraction textLastNameError = onView(
                 allOf(withId(R.id.add_contact_last_name_error), withText("Last name should be more than 3 characters"),
-                        childAtPosition(
-                                allOf(withId(R.id.add_contact_last_name_layout),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                                1)),
-                                1),
                         isDisplayed()));
-        textView2.check(matches(isDisplayed()));
+        textLastNameError.check(matches(isDisplayed()));
 
-        ViewInteraction textView3 = onView(
+        ViewInteraction textPhoneError = onView(
                 allOf(withId(R.id.add_contact_phone_error), withText("Phone number should be of 10 digits"),
-                        childAtPosition(
-                                allOf(withId(R.id.add_contact_phone_layout),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                                1)),
-                                1),
                         isDisplayed()));
-        textView3.check(matches(isDisplayed()));
+        textPhoneError.check(matches(isDisplayed()));
 
-        ViewInteraction textView4 = onView(
+        ViewInteraction textEmailError = onView(
                 allOf(withId(R.id.add_contact_email_error), withText("Email should be in email format"),
-                        childAtPosition(
-                                allOf(withId(R.id.add_contact_email_error),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                                1)),
-                                1),
                         isDisplayed()));
-        textView4.check(matches(isDisplayed()));
+        textEmailError.check(matches(isDisplayed()));
+
+        ViewInteraction editFirstName = onView(allOf(withId(R.id.add_contact_first_name), isDisplayed()));
+
+        editFirstName.perform(typeText(firstName), closeSoftKeyboard());
+
+        textFirstNameError.check(doesNotExist());
+
+        ViewInteraction editLastName = onView(allOf(withId(R.id.add_contact_last_name), isDisplayed()));
+
+        editLastName.perform(typeText(lastName), closeSoftKeyboard());
+
+        textLastNameError.check(doesNotExist());
+
+        ViewInteraction editPhone = onView(allOf(withId(R.id.add_contact_phone), isDisplayed()));
+
+        editPhone.perform(typeText(phone), closeSoftKeyboard());
+
+        textPhoneError.check(doesNotExist());
+
+        ViewInteraction editEmail = onView(allOf(withId(R.id.add_contact_email), isDisplayed()));
+
+        editEmail.perform(typeText(email), closeSoftKeyboard());
+
+        textEmailError.check(doesNotExist());
 
     }
 
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
 
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
-    }
 }
